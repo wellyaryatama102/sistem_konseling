@@ -22,3 +22,13 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# File Diagram dan Wireframe
+erd_konseling_final.html
+activity_diagrams.html
+erd_konseling_final.svg
+generate_erd.js
+sequence_diagrams.html
+use_case_diagram.html
+wireframes_data.js
+wireframes.html
