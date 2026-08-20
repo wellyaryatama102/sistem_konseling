@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Diagrams - Sistem Informasi Konseling Siswa</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+        }
+        body {
+            background-color: #f1f5f9;
+            color: #000000;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .main-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .main-header h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #000000;
+        }
+        .main-header p {
+            font-size: 13.5px;
+            color: #475569;
+            margin-top: 4px;
+        }
+        .tab-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            justify-content: center;
+            max-width: 900px;
+        }
+        .tab-btn {
+            padding: 9px 18px;
+            background: #ffffff;
+            border: 1.5px solid #000000;
+            border-radius: 6px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #000000;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .tab-btn:hover {
+            background: #f1f5f9;
+        }
+        .tab-btn.active {
+            background: #000000;
+            color: #ffffff;
+        }
+        .diagram-sheet {
+            display: none;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #cbd5e1;
+            max-width: 780px;
+            width: 100%;
+        }
+        .diagram-sheet.active {
+            display: block;
+        }
+        .sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1.5px solid #000000;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .sheet-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000000;
+        }
+        .sheet-sub {
+            font-size: 12px;
+            color: #475569;
+        }
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+        .action-button {
+            padding: 7px 14px;
+            background: #000000;
+            color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .action-button:hover {
+            background: #334155;
+        }
+        .action-button.outline {
+            background: #ffffff;
+            color: #000000;
+        }
+        .action-button.outline:hover {
+            background: #f1f5f9;
+        }
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Pure Black and White UML Styling */
+        .swimlane-border { fill: #ffffff; stroke: #000000; stroke-width: 2; }
+        .swimlane-divider { stroke: #000000; stroke-width: 1.6; fill: none; }
+        .swimlane-title { font-size: 14.5px; font-weight: bold; fill: #000000; text-anchor: middle; font-family: 'Segoe UI', Arial, sans-serif; }
+        .action-box { fill: #ffffff; stroke: #000000; stroke-width: 1.4; rx: 6; ry: 6; }
+        .action-text { font-size: 11px; fill: #000000; text-anchor: middle; font-family: 'Segoe UI', Arial, sans-serif; font-weight: 600; }
+        .decision-node { fill: #ffffff; stroke: #000000; stroke-width: 1.4; }
+        .guard-text { font-size: 10.5px; font-weight: bold; fill: #000000; font-family: 'Segoe UI', Arial, sans-serif; }
+        .arrow-line { stroke: #000000; stroke-width: 1.3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        
+        @media print {
+            body { background: white; padding: 0; }
+            .main-header, .tab-nav, .sheet-header, .btn-group { display: none; }
+            .diagram-sheet { box-shadow: none; border: none; padding: 0; max-width: 100%; }
+            .diagram-sheet.active { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-header">
+        <h1>ACTIVITY DIAGRAMS PER AKTOR (HITAM PUTIH)</h1>
+        <p>Sistem Informasi Konseling Siswa - Tata Letak Rapi, Berurutan &amp; Presisi</p>
+    </div>
+
+    <!-- TAB NAVIGATION -->
+    <div class="tab-nav">
+        <button class="tab-btn" onclick="switchTab(0)">1. Admin</button>
+        <button class="tab-btn active" onclick="switchTab(1)">2. Guru BK</button>
+        <button class="tab-btn" onclick="switchTab(2)">3. Wali Kelas</button>
+        <button class="tab-btn" onclick="switchTab(3)">4. Siswa</button>
+        <button class="tab-btn" onclick="switchTab(4)">5. Wakasis</button>
+        <button class="tab-btn" onclick="switchTab(5)">6. Kepala Sekolah</button>
+    </div>
+
+
+    <!-- ========================================================================= -->
+    <!-- 1. ACTIVITY DIAGRAM ADMIN -->
+    <!-- ========================================================================= -->
+    <div class="diagram-sheet" id="sheet-0">
+        <div class="sheet-header">
+            <div>
+                <div class="sheet-title">Activity Diagram: Admin</div>
+                <div class="sheet-sub">Kelola Akun, Penetapan Jabatan, Data Kelas, Jurusan, Wali Kelas &amp; Penempatan Siswa</div>
+            </div>
+            <div class="btn-group">
+                <button class="action-button" onclick="downloadImage(0, 'png')">📥 Unduh Gambar PNG</button>
+                <button class="action-button outline" onclick="downloadImage(0, 'jpg')">📥 Unduh JPG</button>
+                <button class="action-button outline" onclick="window.print()">🖨️ Cetak A4</button>
+            </div>
+        </div>
+
+        <svg id="svg-0" viewBox="0 0 740 760" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <marker id="arr1" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000" />
+                </marker>
+            </defs>
+
+            <rect x="20" y="20" width="700" height="720" class="swimlane-border" />
+            <line x1="370" y1="20" x2="370" y2="740" class="swimlane-divider" />
+            <line x1="20" y1="55" x2="720" y2="55" class="swimlane-divider" />
+            
+            <text x="195" y="44" class="swimlane-title">Admin</text>
+            <text x="545" y="44" class="swimlane-title">Sistem</text>
+
+            <circle cx="195" cy="75" r="11" fill="#000" stroke="#000" stroke-width="1.5" />
+            <line x1="195" y1="86" x2="195" y2="105" class="arrow-line" marker-end="url(#arr1)" />
+
+            <rect x="90" y="105" width="210" height="34" class="action-box" />
+            <text x="195" y="126" class="action-text">Login</text>
+
+            <line x1="300" y1="122" x2="440" y2="122" class="arrow-line" marker-end="url(#arr1)" />
+
+            <rect x="440" y="105" width="210" height="34" class="action-box" />
+            <text x="545" y="126" class="action-text">Validasi Login</text>
+
+            <line x1="545" y1="139" x2="545" y2="165" class="arrow-line" marker-end="url(#arr1)" />
+
+            <polygon points="545,165 590,185 545,205 500,185" class="decision-node" />
+            <text x="545" y="189" class="action-text" style="font-size:9.5px;">Berhasil?</text>
+
+            <path d="M 590 185 L 675 185 L 675 122 L 650 122" class="arrow-line" marker-end="url(#arr1)" />
+            <text x="600" y="180" class="guard-text">Tidak</text>
+
+            <line x1="545" y1="205" x2="545" y2="235" class="arrow-line" marker-end="url(#arr1)" />
+            <text x="551" y="223" class="guard-text">Ya</text>
+
+            <rect x="440" y="235" width="210" height="34" class="action-box" />
+            <text x="545" y="256" class="action-text">Menampilkan Dashboard Admin</text>
+
+            <line x1="440" y1="252" x2="300" y2="252" class="arrow-line" marker-end="url(#arr1)" />
+
+            <rect x="90" y="235" width="210" height="34" class="action-box" />
+            <text x="195" y="249" class="action-text">Kelola Data Profil Pribadi &amp;</text>
+            <text x="195" y="261" class="action-text">Ubah Kata Sandi</text>
+
+            <line x1="195" y1="269" x2="195" y2="300" class="arrow-line" marker-end="url(#arr1)" />
+
+            <rect x="90" y="300" width="210" height="34" class="action-box" />
+            <text x="195" y="321" class="action-text">Mendaftarkan Akun Pengguna Baru</text>
+
+            <line x1="300" y1="317" x2="440" y2="317" class="arrow-line" marker-end="url(#arr1)" />
+
+            <rect x="440" y="300" width="210" height="34" class="action-box" />
+            <text x="545" y="314" class="action-text">Menampilkan Form Pendaftaran &amp;</text>
+            <text x="545" y="326" class="action-text">Simpan Akun Pengguna Baru</text>
+
+            <line x1="545" y1="334" x2="545" y2="365" class="arrow-line" marker-end="url(#arr1)" />
+
+            <rect x="440" y="365" width="210" height="34" class="action-box" />
+            <text x="545" y="379" class="action-text">Menampilkan Halaman Jabatan &amp;</text>
+            <text x="545" y="391" class="action-text">Simpan Hak Akses Pengguna</text>
+
+            <line x1="440" y1="382" x2="300" y2="382" class="arrow-line" marker-end="url(#arr1)" />
+
+            <rect x="90" y="365" width="210" height="34" class="action-box" />
+            <text x="195" y="379" class="action-text">Menetapkan Jabatan Pengguna</text>
+            <text x="195" y="391" class="action-text">(Pembatasan Hak Akses)</text>
+
+            <line x1="195" y1="399" x2="195" y2="430" class="arrow-line" marker-end="url(#arr1)" />
+
+            <rect x="90" y="430" width="210" height="34" class="action-box" />
+            <text x="195" y="444" class="action-text">Mengelola Data Kelas &amp;</text>
+            <text x="195" y="456" class="action-text">Jurusan Sekolah</text>
+
+            <line x1="300" y1="447" x2="440" y2="447" class="arrow-line" marker-end="url(#arr1)" />
+
+            <rect x="440" y="430" width="210" height="34" class="action-box" />
+            <text x="545" y="444" class="action-text">Menampilkan Halaman Kelas &amp;</text>
+            <text x="545" y="456" class="action-text">Simpan Data Kelas &amp; Jurusan</text>
+
+            <line x1="545" y1="464" x2="545" y2="495" class="arrow-line" marker-end="url(#arr1)" />
+
+            <rect x="440" y="495" width="210" height="34" class="action-box" />
+            <text x="545" y="509" class="action-text">Menampilkan Penetapan Walas &amp;</text>
+            <text x="545" y="521" class="action-text">Simpan Wali Kelas Terpilih</text>
+
+            <line x1="440" y1="512" x2="300" y2="512" class="arrow-line" marker-end="url(#arr1)" />
+
+            <rect x="90" y="495" width="210" height="34" class="action-box" />
+            <text x="195" y="516" class="action-text">Menetapkan Guru Wali Kelas</text>
+
+            <line x1="195" y1="529" x2="195" y2="560" class="arrow-line" marker-end="url(#arr1)" />
+
+            <rect x="90" y="560" width="210" height="34" class="action-box" />
+            <text x="195" y="574" class="action-text">Mengelola Penempatan Siswa</text>
+            <text x="195" y="586" class="action-text">dalam Kelas (Rombel)</text>
+
+            <line x1="300" y1="577" x2="440" y2="577" class="arrow-line" marker-end="url(#arr1)" />
+
+            <rect x="440" y="560" width="210" height="34" class="action-box" />
+            <text x="545" y="574" class="action-text">Menampilkan Form Penempatan &amp;</text>
+            <text x="545" y="586" class="action-text">Simpan Penempatan Siswa</text>
+
+            <path d="M 545 594 L 545 642 L 300 642" class="arrow-line" marker-end="url(#arr1)" />
+
+            <rect x="90" y="625" width="210" height="34" class="action-box" />
+            <text x="195" y="646" class="action-text">Logout</text>
+
+            <line x1="195" y1="659" x2="195" y2="690" class="arrow-line" marker-end="url(#arr1)" />
+
+            <circle cx="195" cy="703" r="12" fill="#fff" stroke="#000" stroke-width="1.8" />
+            <circle cx="195" cy="703" r="7" fill="#000" />
+        </svg>
+    </div>
+
+
+    <!-- ========================================================================= -->
+    <!-- 2. ACTIVITY DIAGRAM GURU BK (TATA LETAK RAPI, TERATUR & PRESISI) -->
+    <!-- ========================================================================= -->
+    <div class="diagram-sheet active" id="sheet-1">
+        <div class="sheet-header">
+            <div>
+                <div class="sheet-title">Activity Diagram: Guru BK</div>
+                <div class="sheet-sub">Susunan Aktivitas Teratur, Presisi, Bebas Tumpang Tindih &amp; Sesuai Analisis Tabel 1-5</div>
+            </div>
+            <div class="btn-group">
+                <button class="action-button" onclick="downloadImage(1, 'png')">📥 Unduh Gambar PNG</button>
+                <button class="action-button outline" onclick="downloadImage(1, 'jpg')">📥 Unduh JPG</button>
+                <button class="action-button outline" onclick="window.print()">🖨️ Cetak A4</button>
+            </div>
+        </div>
+
+        <svg id="svg-1" viewBox="0 0 740 1100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <marker id="arr2" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000" />
+                </marker>
+            </defs>
+
+            <!-- Swimlanes Rapat Bawah (y2=1080) -->
+            <rect x="20" y="20" width="700" height="1060" class="swimlane-border" />
+            <line x1="370" y1="20" x2="370" y2="1080" class="swimlane-divider" />
+            <line x1="20" y1="55" x2="720" y2="55" class="swimlane-divider" />
+            
+            <text x="195" y="44" class="swimlane-title">Guru BK</text>
+            <text x="545" y="44" class="swimlane-title">Sistem</text>
+
+            <!-- Initial Node -->
+            <circle cx="195" cy="70" r="11" fill="#000" stroke="#000" stroke-width="1.5" />
+            <line x1="195" y1="81" x2="195" y2="100" class="arrow-line" marker-end="url(#arr2)" />
+
+            <!-- Row 1: Login -->
+            <rect x="90" y="100" width="210" height="34" class="action-box" />
+            <text x="195" y="121" class="action-text">Login</text>
+
+            <line x1="300" y1="117" x2="440" y2="117" class="arrow-line" marker-end="url(#arr2)" />
+
+            <rect x="440" y="100" width="210" height="34" class="action-box" />
+            <text x="545" y="121" class="action-text">Validasi Login</text>
+
+            <line x1="545" y1="134" x2="545" y2="157" class="arrow-line" marker-end="url(#arr2)" />
+
+            <!-- Decision Login -->
+            <polygon points="545,157 590,175 545,193 500,175" class="decision-node" />
+            <text x="545" y="179" class="action-text" style="font-size:9.5px;">Berhasil?</text>
+
+            <path d="M 590 175 L 675 175 L 675 117 L 650 117" class="arrow-line" marker-end="url(#arr2)" />
+            <text x="600" y="170" class="guard-text">Tidak</text>
+
+            <line x1="545" y1="193" x2="545" y2="225" class="arrow-line" marker-end="url(#arr2)" />
+            <text x="551" y="212" class="guard-text">Ya</text>
+
+            <!-- Row 2: Dashboard -->
+            <rect x="440" y="225" width="210" height="34" class="action-box" />
+            <text x="545" y="246" class="action-text">Menampilkan Dashboard Guru BK</text>
+
+            <line x1="440" y1="242" x2="300" y2="242" class="arrow-line" marker-end="url(#arr2)" />
+
+            <!-- Row 3: Menerima Notifikasi Layanan Konseling -->
+            <rect x="90" y="225" width="210" height="34" class="action-box" />
+            <text x="195" y="239" class="action-text">Menerima Notifikasi Terkait</text>
+            <text x="195" y="251" class="action-text">Layanan Konseling</text>
+
+            <line x1="195" y1="259" x2="195" y2="290" class="arrow-line" marker-end="url(#arr2)" />
+
+            <!-- Row 4: Mengelola Jadwal Ketersediaan Waktu Konseling -->
+            <rect x="90" y="290" width="210" height="34" class="action-box" />
+            <text x="195" y="304" class="action-text">Mengelola Jadwal Ketersediaan</text>
+            <text x="195" y="316" class="action-text">Waktu Konseling</text>
+
+            <line x1="300" y1="307" x2="440" y2="307" class="arrow-line" marker-end="url(#arr2)" />
+
+            <rect x="440" y="290" width="210" height="34" class="action-box" />
+            <text x="545" y="304" class="action-text">Menampilkan Form Jadwal &amp;</text>
+            <text x="545" y="316" class="action-text">Simpan Ketersediaan Slot</text>
+
+            <line x1="195" y1="324" x2="195" y2="355" class="arrow-line" marker-end="url(#arr2)" />
+
+            <!-- Row 5: Memvalidasi Pengajuan Siswa & Rujukan Walas -->
+            <rect x="90" y="355" width="210" height="34" class="action-box" />
+            <text x="195" y="369" class="action-text">Memvalidasi Pengajuan Siswa &amp;</text>
+            <text x="195" y="381" class="action-text">Rujukan Wali Kelas</text>
+
+            <line x1="300" y1="372" x2="440" y2="372" class="arrow-line" marker-end="url(#arr2)" />
+
+            <rect x="440" y="355" width="210" height="34" class="action-box" />
+            <text x="545" y="369" class="action-text">Menampilkan Daftar Pengajuan &amp;</text>
+            <text x="545" y="381" class="action-text">Rujukan Konseling</text>
+
+            <line x1="545" y1="389" x2="545" y2="415" class="arrow-line" marker-end="url(#arr2)" />
+
+            <!-- Decision Disetujui? -->
+            <polygon points="545,415 590,433 545,451 500,433" class="decision-node" />
+            <text x="545" y="437" class="action-text" style="font-size:9.5px;">Disetujui?</text>
+
+            <!-- Ditolak [Tidak] -->
+            <path d="M 500 433 L 415 433 L 415 482 L 440 482" class="arrow-line" marker-end="url(#arr2)" />
+            <text x="420" y="428" class="guard-text">Tidak</text>
+
+            <rect x="440" y="465" width="210" height="34" class="action-box" />
+            <text x="545" y="479" class="action-text">Simpan Status "Ditolak" &amp;</text>
+            <text x="545" y="491" class="action-text">Kirim Notifikasi WA ke Siswa</text>
+
+            <!-- Disetujui [Ya] -->
+            <path d="M 590 433 L 675 433 L 675 542 L 650 542" class="arrow-line" marker-end="url(#arr2)" />
+            <text x="600" y="428" class="guard-text">Ya</text>
+
+            <!-- Row 6: Simpan Status Terjadwal -->
+            <rect x="440" y="525" width="210" height="34" class="action-box" />
+            <text x="545" y="539" class="action-text">Simpan Status "Terjadwal" &amp;</text>
+            <text x="545" y="551" class="action-text">Kirim Notifikasi WA ke Siswa</text>
+
+            <line x1="440" y1="542" x2="300" y2="542" class="arrow-line" marker-end="url(#arr2)" />
+
+            <!-- Row 7: Melaksanakan Sesi Konseling -->
+            <rect x="90" y="525" width="210" height="34" class="action-box" />
+            <text x="195" y="546" class="action-text">Melaksanakan Sesi Konseling</text>
+
+            <line x1="195" y1="559" x2="195" y2="590" class="arrow-line" marker-end="url(#arr2)" />
+
+            <!-- Row 8: Mencatat Hasil Konseling -->
+            <rect x="90" y="590" width="210" height="34" class="action-box" />
+            <text x="195" y="604" class="action-text">Mencatat Hasil Konseling &amp;</text>
+            <text x="195" y="616" class="action-text">Kehadiran Siswa</text>
+
+            <line x1="300" y1="607" x2="440" y2="607" class="arrow-line" marker-end="url(#arr2)" />
+
+            <rect x="440" y="590" width="210" height="34" class="action-box" />
+            <text x="545" y="604" class="action-text">Simpan Catatan Hasil Konseling</text>
+            <text x="545" y="616" class="action-text">&amp; Kehadiran Siswa</text>
+
+            <line x1="545" y1="624" x2="545" y2="650" class="arrow-line" marker-end="url(#arr2)" />
+
+            <!-- DECISION 1: Tindak Lanjut? (Ya / Tidak) -->
+            <polygon points="545,650 595,668 545,686 495,668" class="decision-node" />
+            <text x="545" y="672" class="action-text" style="font-size:9px;">Tindak Lanjut?</text>
+
+            <!-- [TIDAK] Konseling Selesai: Mengalir ke Kanan Luar Menuju Simpan Status Selesai di Paling Bawah -->
+            <path d="M 595 668 L 675 668 L 675 987 L 650 987" class="arrow-line" marker-end="url(#arr2)" />
+            <text x="600" y="663" class="guard-text">Tidak</text>
+
+            <!-- [YA]: Masuk ke Aktivitas Memutuskan Pendampingan Orang Tua -->
+            <path d="M 495 668 L 195 668 L 195 720" class="arrow-line" marker-end="url(#arr2)" />
+            <text x="360" y="663" class="guard-text">Ya</text>
+
+            <!-- Row 9: Memutuskan Pendampingan Orang Tua -->
+            <rect x="90" y="720" width="210" height="34" class="action-box" />
+            <text x="195" y="734" class="action-text">Memutuskan Pendampingan</text>
+            <text x="195" y="746" class="action-text">Orang Tua / Wali</text>
+
+            <line x1="195" y1="754" x2="195" y2="780" class="arrow-line" marker-end="url(#arr2)" />
+
+            <!-- DECISION 2: Pendampingan Ortu? (Ya / Tidak) -->
+            <polygon points="195,780 250,798 195,816 140,798" class="decision-node" />
+            <text x="195" y="802" class="action-text" style="font-size:8.5px;">Pendampingan Ortu?</text>
+
+            <!-- YA (LURUS KE BAWAH: Menerbitkan Surat Panggilan Orang Tua/Wali) -->
+            <line x1="195" y1="816" x2="195" y2="845" class="arrow-line" marker-end="url(#arr2)" />
+            <text x="202" y="832" class="guard-text">Ya</text>
+
+            <!-- Row 10: Menerbitkan Surat Panggilan -->
+            <rect x="90" y="845" width="210" height="34" class="action-box" />
+            <text x="195" y="859" class="action-text">Menerbitkan Surat Panggilan</text>
+            <text x="195" y="871" class="action-text">Orang Tua / Wali</text>
+
+            <line x1="300" y1="862" x2="440" y2="862" class="arrow-line" marker-end="url(#arr2)" />
+
+            <rect x="440" y="845" width="210" height="34" class="action-box" />
+            <text x="545" y="859" class="action-text">Generate Tautan Surat Panggilan &amp;</text>
+            <text x="545" y="871" class="action-text">Kirim Notifikasi WA ke Orang Tua</text>
+
+            <!-- Dari Generate Tautan Surat Panggilan Masuk ke Bagian Atas Mengatur Jadwal Sesi Lanjutan -->
+            <path d="M 545 879 L 545 892 L 195 892 L 195 910" class="arrow-line" marker-end="url(#arr2)" />
+
+            <!-- TIDAK (BELOK KE KIRI DAN TURUN: Langsung ke Mengatur Jadwal Sesi Lanjutan) -->
+            <path d="M 140 798 L 55 798 L 55 927 L 90 927" class="arrow-line" marker-end="url(#arr2)" />
+            <text x="65" y="793" class="guard-text">Tidak</text>
+
+            <!-- Row 11: Mengatur Jadwal Sesi Lanjutan -->
+            <rect x="90" y="910" width="210" height="34" class="action-box" />
+            <text x="195" y="924" class="action-text">Mengatur Jadwal Sesi Lanjutan</text>
+            <text x="195" y="936" class="action-text">(Konseling Selanjutnya)</text>
+
+            <line x1="300" y1="927" x2="440" y2="927" class="arrow-line" marker-end="url(#arr2)" />
+
+            <rect x="440" y="910" width="210" height="34" class="action-box" />
+            <text x="545" y="924" class="action-text">Buat Jadwal Baru "Terjadwal" &amp;</text>
+            <text x="545" y="936" class="action-text">Kirim Notifikasi WA ke Siswa</text>
+
+            <!-- Panah Vertikal dari Buat Jadwal Baru Menuju Simpan Status Selesai di Paling Bawah -->
+            <line x1="545" y1="944" x2="545" y2="970" class="arrow-line" marker-end="url(#arr2)" />
+
+            <!-- Row 12: SIMPAN STATUS LAYANAN "SELESAI" (DI BAGIAN PALING BAWAH) -->
+            <rect x="440" y="970" width="210" height="34" class="action-box" />
+            <text x="545" y="991" class="action-text">Simpan Status Layanan "Selesai"</text>
+
+            <line x1="440" y1="987" x2="300" y2="987" class="arrow-line" marker-end="url(#arr2)" />
+
+            <!-- Row 13: Logout -->
+            <rect x="90" y="970" width="210" height="34" class="action-box" />
+            <text x="195" y="991" class="action-text">Logout</text>
+
+            <line x1="195" y1="1004" x2="195" y2="1035" class="arrow-line" marker-end="url(#arr2)" />
+
+            <!-- Final Node (Rapat Presisi) -->
+            <circle cx="195" cy="1048" r="12" fill="#fff" stroke="#000" stroke-width="1.8" />
+            <circle cx="195" cy="1048" r="7" fill="#000" />
+        </svg>
+    </div>
+
+
+    <!-- ========================================================================= -->
+    <!-- 3. ACTIVITY DIAGRAM WALI KELAS -->
+    <!-- ========================================================================= -->
+    <div class="diagram-sheet" id="sheet-2">
+        <div class="sheet-header">
+            <div>
+                <div class="sheet-title">Activity Diagram: Wali Kelas</div>
+                <div class="sheet-sub">Rujukan Konseling Siswa Binaan &amp; Pemantauan Status Sesuai Hak Akses</div>
+            </div>
+            <div class="btn-group">
+                <button class="action-button" onclick="downloadImage(2, 'png')">📥 Unduh Gambar PNG</button>
+                <button class="action-button outline" onclick="downloadImage(2, 'jpg')">📥 Unduh JPG</button>
+                <button class="action-button outline" onclick="window.print()">🖨️ Cetak A4</button>
+            </div>
+        </div>
+
+        <svg id="svg-2" viewBox="0 0 740 570" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <marker id="arr3" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000" />
+                </marker>
+            </defs>
+
+            <rect x="20" y="20" width="700" height="530" class="swimlane-border" />
+            <line x1="370" y1="20" x2="370" y2="550" class="swimlane-divider" />
+            <line x1="20" y1="55" x2="720" y2="55" class="swimlane-divider" />
+            
+            <text x="195" y="44" class="swimlane-title">Wali Kelas</text>
+            <text x="545" y="44" class="swimlane-title">Sistem</text>
+
+            <circle cx="195" cy="75" r="11" fill="#000" stroke="#000" stroke-width="1.5" />
+            <line x1="195" y1="86" x2="195" y2="105" class="arrow-line" marker-end="url(#arr3)" />
+
+            <rect x="90" y="105" width="210" height="34" class="action-box" />
+            <text x="195" y="126" class="action-text">Login</text>
+
+            <line x1="300" y1="122" x2="440" y2="122" class="arrow-line" marker-end="url(#arr3)" />
+
+            <rect x="440" y="105" width="210" height="34" class="action-box" />
+            <text x="545" y="126" class="action-text">Validasi Login</text>
+
+            <line x1="545" y1="139" x2="545" y2="165" class="arrow-line" marker-end="url(#arr3)" />
+
+            <polygon points="545,165 590,185 545,205 500,185" class="decision-node" />
+            <text x="545" y="189" class="action-text" style="font-size:9.5px;">Berhasil?</text>
+
+            <path d="M 590 185 L 675 185 L 675 122 L 650 122" class="arrow-line" marker-end="url(#arr3)" />
+            <text x="600" y="180" class="guard-text">Tidak</text>
+
+            <line x1="545" y1="205" x2="545" y2="235" class="arrow-line" marker-end="url(#arr3)" />
+            <text x="551" y="223" class="guard-text">Ya</text>
+
+            <rect x="440" y="235" width="210" height="34" class="action-box" />
+            <text x="545" y="249" class="action-text">Menampilkan Dashboard Wali Kelas</text>
+            <text x="545" y="261" class="action-text">(Khusus Kelas yang Diampu)</text>
+
+            <line x1="440" y1="252" x2="300" y2="252" class="arrow-line" marker-end="url(#arr3)" />
+
+            <rect x="90" y="235" width="210" height="34" class="action-box" />
+            <text x="195" y="256" class="action-text">Memilih Siswa di Kelas yang Diampu</text>
+
+            <line x1="195" y1="269" x2="195" y2="300" class="arrow-line" marker-end="url(#arr3)" />
+
+            <rect x="90" y="300" width="210" height="34" class="action-box" />
+            <text x="195" y="314" class="action-text">Mengisi Alasan Rujukan &amp;</text>
+            <text x="195" y="326" class="action-text">Kirim ke Guru BK</text>
+
+            <line x1="300" y1="317" x2="440" y2="317" class="arrow-line" marker-end="url(#arr3)" />
+
+            <rect x="440" y="300" width="210" height="34" class="action-box" />
+            <text x="545" y="314" class="action-text">Simpan Data Rujukan Konseling &amp;</text>
+            <text x="545" y="326" class="action-text">Kirim Notifikasi WA ke Guru BK</text>
+
+            <line x1="545" y1="334" x2="545" y2="365" class="arrow-line" marker-end="url(#arr3)" />
+
+            <rect x="440" y="365" width="210" height="34" class="action-box" />
+            <text x="545" y="379" class="action-text">Menampilkan Status &amp; Informasi Hasil</text>
+            <text x="545" y="391" class="action-text">(Sesuai Hak Akses Wali Kelas)</text>
+
+            <path d="M 545 399 L 545 447 L 300 447" class="arrow-line" marker-end="url(#arr3)" />
+
+            <rect x="90" y="430" width="210" height="34" class="action-box" />
+            <text x="195" y="451" class="action-text">Logout</text>
+
+            <line x1="195" y1="464" x2="195" y2="495" class="arrow-line" marker-end="url(#arr3)" />
+
+            <circle cx="195" cy="508" r="12" fill="#fff" stroke="#000" stroke-width="1.8" />
+            <circle cx="195" cy="508" r="7" fill="#000" />
+        </svg>
+    </div>
+
+
+    <!-- ========================================================================= -->
+    <!-- 4. ACTIVITY DIAGRAM SISWA -->
+    <!-- ========================================================================= -->
+    <div class="diagram-sheet" id="sheet-3">
+        <div class="sheet-header">
+            <div>
+                <div class="sheet-title">Activity Diagram: Siswa</div>
+                <div class="sheet-sub">Pengajuan Konseling Mandiri, Pembatalan, Status &amp; Arahan Konseling Pribadi</div>
+            </div>
+            <div class="btn-group">
+                <button class="action-button" onclick="downloadImage(3, 'png')">📥 Unduh Gambar PNG</button>
+                <button class="action-button outline" onclick="downloadImage(3, 'jpg')">📥 Unduh JPG</button>
+                <button class="action-button outline" onclick="window.print()">🖨️ Cetak A4</button>
+            </div>
+        </div>
+
+        <svg id="svg-3" viewBox="0 0 740 750" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <marker id="arr4" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000" />
+                </marker>
+            </defs>
+
+            <rect x="20" y="20" width="700" height="710" class="swimlane-border" />
+            <line x1="370" y1="20" x2="370" y2="730" class="swimlane-divider" />
+            <line x1="20" y1="55" x2="720" y2="55" class="swimlane-divider" />
+            
+            <text x="195" y="44" class="swimlane-title">Siswa</text>
+            <text x="545" y="44" class="swimlane-title">Sistem</text>
+
+            <circle cx="195" cy="75" r="11" fill="#000" stroke="#000" stroke-width="1.5" />
+            <line x1="195" y1="86" x2="195" y2="105" class="arrow-line" marker-end="url(#arr4)" />
+
+            <rect x="90" y="105" width="210" height="34" class="action-box" />
+            <text x="195" y="126" class="action-text">Login</text>
+
+            <line x1="300" y1="122" x2="440" y2="122" class="arrow-line" marker-end="url(#arr4)" />
+
+            <rect x="440" y="105" width="210" height="34" class="action-box" />
+            <text x="545" y="126" class="action-text">Validasi Login</text>
+
+            <line x1="545" y1="139" x2="545" y2="165" class="arrow-line" marker-end="url(#arr4)" />
+
+            <polygon points="545,165 590,185 545,205 500,185" class="decision-node" />
+            <text x="545" y="189" class="action-text" style="font-size:9.5px;">Berhasil?</text>
+
+            <path d="M 590 185 L 675 185 L 675 122 L 650 122" class="arrow-line" marker-end="url(#arr4)" />
+            <text x="600" y="180" class="guard-text">Tidak</text>
+
+            <line x1="545" y1="205" x2="545" y2="235" class="arrow-line" marker-end="url(#arr4)" />
+            <text x="551" y="223" class="guard-text">Ya</text>
+
+            <rect x="440" y="235" width="210" height="34" class="action-box" />
+            <text x="545" y="256" class="action-text">Menampilkan Dashboard Siswa</text>
+
+            <line x1="440" y1="252" x2="300" y2="252" class="arrow-line" marker-end="url(#arr4)" />
+
+            <rect x="90" y="235" width="210" height="34" class="action-box" />
+            <text x="195" y="249" class="action-text">Melengkapi Profil, Nomor WA</text>
+            <text x="195" y="261" class="action-text">Siswa &amp; Nomor WA Orang Tua</text>
+
+            <line x1="195" y1="269" x2="195" y2="300" class="arrow-line" marker-end="url(#arr4)" />
+
+            <rect x="90" y="300" width="210" height="34" class="action-box" />
+            <text x="195" y="314" class="action-text">Memilih Slot Jadwal BK, Jenis Layanan</text>
+            <text x="195" y="326" class="action-text">&amp; Mengisi Alasan Pengajuan</text>
+
+            <line x1="300" y1="317" x2="440" y2="317" class="arrow-line" marker-end="url(#arr4)" />
+
+            <rect x="440" y="300" width="210" height="34" class="action-box" />
+            <text x="545" y="314" class="action-text">Simpan Status "Menunggu Validasi"</text>
+            <text x="545" y="326" class="action-text">&amp; Kirim Notifikasi WA ke Guru BK</text>
+
+            <line x1="545" y1="334" x2="545" y2="365" class="arrow-line" marker-end="url(#arr4)" />
+
+            <rect x="440" y="365" width="210" height="34" class="action-box" />
+            <text x="545" y="386" class="action-text">Menampilkan Status Pengajuan Konseling</text>
+
+            <line x1="440" y1="382" x2="300" y2="382" class="arrow-line" marker-end="url(#arr4)" />
+
+            <rect x="90" y="365" width="210" height="34" class="action-box" />
+            <text x="195" y="386" class="action-text">Melihat Status Pengajuan Konseling</text>
+
+            <line x1="195" y1="399" x2="195" y2="425" class="arrow-line" marker-end="url(#arr4)" />
+
+            <polygon points="195,425 240,445 195,465 150,445" class="decision-node" />
+            <text x="195" y="449" class="action-text" style="font-size:9px;">Batalkan?</text>
+
+            <path d="M 150 445 L 55 445 L 55 495 L 90 495" class="arrow-line" marker-end="url(#arr4)" />
+            <text x="95" y="440" class="guard-text">Ya</text>
+
+            <rect x="90" y="478" width="210" height="34" class="action-box" />
+            <text x="195" y="499" class="action-text">Membatalkan Pengajuan Konseling</text>
+
+            <line x1="300" y1="495" x2="440" y2="495" class="arrow-line" marker-end="url(#arr4)" />
+
+            <rect x="440" y="478" width="210" height="34" class="action-box" />
+            <text x="545" y="492" class="action-text">Update Status "Dibatalkan" &amp;</text>
+            <text x="545" y="504" class="action-text">Kirim Notifikasi WA ke Guru BK</text>
+
+            <line x1="240" y1="445" x2="440" y2="445" class="arrow-line" marker-end="url(#arr4)" />
+            <text x="250" y="440" class="guard-text">Tidak</text>
+
+            <rect x="440" y="428" width="210" height="34" class="action-box" />
+            <text x="545" y="442" class="action-text">Kirim Notifikasi WA Hasil Validasi &amp;</text>
+            <text x="545" y="454" class="action-text">Reminder H-1 ke Siswa</text>
+
+            <path d="M 545 512 L 545 560 L 300 560" class="arrow-line" marker-end="url(#arr4)" />
+
+            <rect x="90" y="543" width="210" height="34" class="action-box" />
+            <text x="195" y="557" class="action-text">Melihat Arahan Hasil Konseling</text>
+            <text x="195" y="569" class="action-text">(Khusus Data Pribadi Siswa)</text>
+
+            <line x1="195" y1="577" x2="195" y2="610" class="arrow-line" marker-end="url(#arr4)" />
+
+            <rect x="90" y="610" width="210" height="34" class="action-box" />
+            <text x="195" y="631" class="action-text">Logout</text>
+
+            <line x1="195" y1="644" x2="195" y2="675" class="arrow-line" marker-end="url(#arr4)" />
+
+            <circle cx="195" cy="688" r="12" fill="#fff" stroke="#000" stroke-width="1.8" />
+            <circle cx="195" cy="688" r="7" fill="#000" />
+        </svg>
+    </div>
+
+
+    <!-- ========================================================================= -->
+    <!-- 5. ACTIVITY DIAGRAM WAKASIS -->
+    <!-- ========================================================================= -->
+    <div class="diagram-sheet" id="sheet-4">
+        <div class="sheet-header">
+            <div>
+                <div class="sheet-title">Activity Diagram: Wakasis</div>
+                <div class="sheet-sub">Pemantauan Rekapitulasi Layanan Konseling &amp; Unduh Laporan Statistik Sekolah</div>
+            </div>
+            <div class="btn-group">
+                <button class="action-button" onclick="downloadImage(4, 'png')">📥 Unduh Gambar PNG</button>
+                <button class="action-button outline" onclick="downloadImage(4, 'jpg')">📥 Unduh JPG</button>
+                <button class="action-button outline" onclick="window.print()">🖨️ Cetak A4</button>
+            </div>
+        </div>
+
+        <svg id="svg-4" viewBox="0 0 740 570" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <marker id="arr5" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000" />
+                </marker>
+            </defs>
+
+            <rect x="20" y="20" width="700" height="530" class="swimlane-border" />
+            <line x1="370" y1="20" x2="370" y2="550" class="swimlane-divider" />
+            <line x1="20" y1="55" x2="720" y2="55" class="swimlane-divider" />
+            
+            <text x="195" y="44" class="swimlane-title">Wakasis</text>
+            <text x="545" y="44" class="swimlane-title">Sistem</text>
+
+            <circle cx="195" cy="75" r="11" fill="#000" stroke="#000" stroke-width="1.5" />
+            <line x1="195" y1="86" x2="195" y2="105" class="arrow-line" marker-end="url(#arr5)" />
+
+            <rect x="90" y="105" width="210" height="34" class="action-box" />
+            <text x="195" y="126" class="action-text">Login</text>
+
+            <line x1="300" y1="122" x2="440" y2="122" class="arrow-line" marker-end="url(#arr5)" />
+
+            <rect x="440" y="105" width="210" height="34" class="action-box" />
+            <text x="545" y="126" class="action-text">Validasi Login</text>
+
+            <line x1="545" y1="139" x2="545" y2="165" class="arrow-line" marker-end="url(#arr5)" />
+
+            <polygon points="545,165 590,185 545,205 500,185" class="decision-node" />
+            <text x="545" y="189" class="action-text" style="font-size:9.5px;">Berhasil?</text>
+
+            <path d="M 590 185 L 675 185 L 675 122 L 650 122" class="arrow-line" marker-end="url(#arr5)" />
+            <text x="600" y="180" class="guard-text">Tidak</text>
+
+            <line x1="545" y1="205" x2="545" y2="235" class="arrow-line" marker-end="url(#arr5)" />
+            <text x="551" y="223" class="guard-text">Ya</text>
+
+            <rect x="440" y="235" width="210" height="34" class="action-box" />
+            <text x="545" y="256" class="action-text">Menampilkan Dashboard Wakasis</text>
+
+            <line x1="440" y1="252" x2="300" y2="252" class="arrow-line" marker-end="url(#arr5)" />
+
+            <rect x="90" y="235" width="210" height="34" class="action-box" />
+            <text x="195" y="256" class="action-text">Membuka Menu Rekapitulasi</text>
+
+            <line x1="195" y1="269" x2="195" y2="300" class="arrow-line" marker-end="url(#arr5)" />
+
+            <rect x="90" y="300" width="210" height="34" class="action-box" />
+            <text x="195" y="321" class="action-text">Memfilter Data Kelas &amp; Periode</text>
+
+            <line x1="300" y1="317" x2="440" y2="317" class="arrow-line" marker-end="url(#arr5)" />
+
+            <rect x="440" y="300" width="210" height="34" class="action-box" />
+            <text x="545" y="314" class="action-text">Memproses &amp; Menampilkan Grafik</text>
+            <text x="545" y="326" class="action-text">Perkembangan Layanan Konseling</text>
+
+            <line x1="545" y1="334" x2="545" y2="365" class="arrow-line" marker-end="url(#arr5)" />
+
+            <rect x="440" y="365" width="210" height="34" class="action-box" />
+            <text x="545" y="386" class="action-text">Menyediakan Berkas Laporan PDF</text>
+
+            <path d="M 545 399 L 545 447 L 300 447" class="arrow-line" marker-end="url(#arr5)" />
+
+            <rect x="90" y="430" width="210" height="34" class="action-box" />
+            <text x="195" y="451" class="action-text">Logout</text>
+
+            <line x1="195" y1="464" x2="195" y2="495" class="arrow-line" marker-end="url(#arr5)" />
+
+            <circle cx="195" cy="508" r="12" fill="#fff" stroke="#000" stroke-width="1.8" />
+            <circle cx="195" cy="508" r="7" fill="#000" />
+        </svg>
+    </div>
+
+
+    <!-- ========================================================================= -->
+    <!-- 6. ACTIVITY DIAGRAM KEPALA SEKOLAH -->
+    <!-- ========================================================================= -->
+    <div class="diagram-sheet" id="sheet-5">
+        <div class="sheet-header">
+            <div>
+                <div class="sheet-title">Activity Diagram: Kepala Sekolah</div>
+                <div class="sheet-sub">Monitoring Laporan Kinerja Layanan (Kelas, Jurusan, Guru BK) Tanpa Rincian Kasus Individu</div>
+            </div>
+            <div class="btn-group">
+                <button class="action-button" onclick="downloadImage(5, 'png')">📥 Unduh Gambar PNG</button>
+                <button class="action-button outline" onclick="downloadImage(5, 'jpg')">📥 Unduh JPG</button>
+                <button class="action-button outline" onclick="window.print()">🖨️ Cetak A4</button>
+            </div>
+        </div>
+
+        <svg id="svg-5" viewBox="0 0 740 570" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <marker id="arr6" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#000" />
+                </marker>
+            </defs>
+
+            <rect x="20" y="20" width="700" height="530" class="swimlane-border" />
+            <line x1="370" y1="20" x2="370" y2="550" class="swimlane-divider" />
+            <line x1="20" y1="55" x2="720" y2="55" class="swimlane-divider" />
+            
+            <text x="195" y="44" class="swimlane-title">Kepala Sekolah</text>
+            <text x="545" y="44" class="swimlane-title">Sistem</text>
+
+            <circle cx="195" cy="75" r="11" fill="#000" stroke="#000" stroke-width="1.5" />
+            <line x1="195" y1="86" x2="195" y2="105" class="arrow-line" marker-end="url(#arr6)" />
+
+            <rect x="90" y="105" width="210" height="34" class="action-box" />
+            <text x="195" y="126" class="action-text">Login</text>
+
+            <line x1="300" y1="122" x2="440" y2="122" class="arrow-line" marker-end="url(#arr6)" />
+
+            <rect x="440" y="105" width="210" height="34" class="action-box" />
+            <text x="545" y="126" class="action-text">Validasi Login</text>
+
+            <line x1="545" y1="139" x2="545" y2="165" class="arrow-line" marker-end="url(#arr6)" />
+
+            <polygon points="545,165 590,185 545,205 500,185" class="decision-node" />
+            <text x="545" y="189" class="action-text" style="font-size:9.5px;">Berhasil?</text>
+
+            <path d="M 590 185 L 675 185 L 675 122 L 650 122" class="arrow-line" marker-end="url(#arr6)" />
+            <text x="600" y="180" class="guard-text">Tidak</text>
+
+            <line x1="545" y1="205" x2="545" y2="235" class="arrow-line" marker-end="url(#arr6)" />
+            <text x="551" y="223" class="guard-text">Ya</text>
+
+            <rect x="440" y="235" width="210" height="34" class="action-box" />
+            <text x="545" y="249" class="action-text">Menampilkan Dashboard Eksekutif</text>
+            <text x="545" y="261" class="action-text">Kepala Sekolah</text>
+
+            <line x1="440" y1="252" x2="300" y2="252" class="arrow-line" marker-end="url(#arr6)" />
+
+            <rect x="90" y="235" width="210" height="34" class="action-box" />
+            <text x="195" y="256" class="action-text">Membuka Menu Laporan Kinerja</text>
+
+            <line x1="195" y1="269" x2="195" y2="300" class="arrow-line" marker-end="url(#arr6)" />
+
+            <rect x="90" y="300" width="210" height="34" class="action-box" />
+            <text x="195" y="314" class="action-text">Memilih Filter Tingkat Kelas,</text>
+            <text x="195" y="326" class="action-text">Jurusan, &amp; Guru BK</text>
+
+            <line x1="300" y1="317" x2="440" y2="317" class="arrow-line" marker-end="url(#arr6)" />
+
+            <rect x="440" y="300" width="210" height="34" class="action-box" />
+            <text x="545" y="314" class="action-text">Menampilkan Laporan Kinerja Agregasi</text>
+            <text x="545" y="326" class="action-text">(Tanpa Rincian Kasus Individu)</text>
+
+            <line x1="545" y1="334" x2="545" y2="365" class="arrow-line" marker-end="url(#arr6)" />
+
+            <rect x="440" y="365" width="210" height="34" class="action-box" />
+            <text x="545" y="386" class="action-text">Menyediakan Berkas Laporan PDF</text>
+
+            <path d="M 545 399 L 545 447 L 300 447" class="arrow-line" marker-end="url(#arr6)" />
+
+            <rect x="90" y="430" width="210" height="34" class="action-box" />
+            <text x="195" y="451" class="action-text">Logout</text>
+
+            <line x1="195" y1="464" x2="195" y2="495" class="arrow-line" marker-end="url(#arr6)" />
+
+            <circle cx="195" cy="508" r="12" fill="#fff" stroke="#000" stroke-width="1.8" />
+            <circle cx="195" cy="508" r="7" fill="#000" />
+        </svg>
+    </div>
+
+
+    <script>
+        const actorNames = ['admin', 'guru_bk', 'wali_kelas', 'siswa', 'wakasis', 'kepala_sekolah'];
+
+        function switchTab(index) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const sheets = document.querySelectorAll('.diagram-sheet');
+            
+            tabs.forEach((tab, i) => {
+                if (i === index) {
+                    tab.classList.add('active');
+                    sheets[i].classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                    sheets[i].classList.remove('active');
+                }
+            });
+        }
+
+        function downloadImage(index, format) {
+            const svgElement = document.getElementById(`svg-${index}`);
+            if (!svgElement) return;
+
+            // Clone to avoid modifying the active DOM
+            const clonedSvg = svgElement.cloneNode(true);
+            
+            // Find or create defs inside clone
+            let defs = clonedSvg.querySelector('defs');
+            if (!defs) {
+                defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                clonedSvg.insertBefore(defs, clonedSvg.firstChild);
+            }
+
+            // Copy all styles from parent document to ensure styles are applied inside image context
+            const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+            let cssText = '';
+            for (const sheet of document.styleSheets) {
+                try {
+                    const rules = sheet.cssRules || sheet.rules;
+                    if (rules) {
+                        for (const rule of rules) {
+                            cssText += rule.cssText + '\n';
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Could not read stylesheet rules: ', e);
+                }
+            }
+            style.textContent = cssText;
+            defs.appendChild(style);
+
+            const serializer = new XMLSerializer();
+            let svgString = serializer.serializeToString(clonedSvg);
+            
+            if (!svgString.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+                svgString = svgString.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+            }
+
+            const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+            const URL = window.URL || window.webkitURL || window;
+            const blobURL = URL.createObjectURL(svgBlob);
+            
+            const image = new Image();
+            image.onload = function() {
+                const scaleFactor = 3; // 3x HD Resolution
+                const canvas = document.createElement('canvas');
+                
+                let width = 740;
+                let height = 760;
+                if (svgElement.viewBox && svgElement.viewBox.baseVal) {
+                    width = svgElement.viewBox.baseVal.width || width;
+                    height = svgElement.viewBox.baseVal.height || height;
+                }
+                
+                canvas.width = width * scaleFactor;
+                canvas.height = height * scaleFactor;
+                
+                const context = canvas.getContext('2d');
+                context.fillStyle = '#ffffff';
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(image, 0, 0, canvas.width, canvas.height);
+                
+                const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
+                const quality = format === 'jpg' ? 0.95 : 1.0;
+                const dataUrl = canvas.toDataURL(mimeType, quality);
+                
+                const fileNamesMap = {
+                    'admin': 'Activity-Admin',
+                    'guru_bk': 'Activity-Guru-BK',
+                    'wali_kelas': 'Activity-Wali-Kelas',
+                    'siswa': 'Activity-Siswa',
+                    'wakasis': 'Activity-Wakasis',
+                    'kepala_sekolah': 'Activity-Kepala-Sekolah'
+                };
+                
+                const downloadLink = document.createElement('a');
+                downloadLink.download = `${fileNamesMap[actorNames[index]]}.${format}`;
+                downloadLink.href = dataUrl;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                URL.revokeObjectURL(blobURL);
+            };
+            image.src = blobURL;
+        }
+    </script>
+</body>
+</html>
