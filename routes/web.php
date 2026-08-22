@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\SiswaController as AdminSiswaController;
 use App\Http\Controllers\Admin\KelasController as AdminKelasController;
+use App\Http\Controllers\Admin\JurusanController as AdminJurusanController;
 use App\Http\Controllers\Admin\TahunAjaranController as AdminTahunAjaranController;
 use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 use App\Http\Controllers\Admin\LogAktivitasController as AdminLogAktivitasController;
@@ -16,13 +17,14 @@ use App\Http\Controllers\WaliKelas\WaliKelasController;
 use App\Http\Controllers\Wakasis\WakasisController;
 use App\Http\Controllers\KepalaSekolah\KepalaSekolahController;
 
-// Auth Routes
+// Auth & Public Landing Routes
 Route::get('/', function () {
     if (auth()->check()) {
         return (new LoginController)->redirectUser(auth()->user());
     }
-    return redirect()->route('login');
-});
+    return view('landing');
+})->name('landing');
+
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
@@ -51,12 +53,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Data Siswa
     Route::resource('siswa', AdminSiswaController::class)->only(['index', 'show', 'edit', 'update', 'destroy']);
 
-    // Manajemen Kelas
+    // Manajemen Kelas & Jurusan
     Route::resource('kelas', AdminKelasController::class)->except(['show'])->parameters(['kelas' => 'kelas']);
+    Route::resource('jurusan', AdminJurusanController::class)->except(['create', 'show'])->parameters(['jurusan' => 'jurusan']);
 
     // Tahun Ajaran
     Route::get('/tahun-ajaran', [AdminTahunAjaranController::class, 'index'])->name('tahun-ajaran.index');
     Route::post('/tahun-ajaran', [AdminTahunAjaranController::class, 'store'])->name('tahun-ajaran.store');
+    Route::patch('/tahun-ajaran/{tahunAjaran}/status', [AdminTahunAjaranController::class, 'toggleStatus'])->name('tahun-ajaran.toggle-status');
+    Route::delete('/tahun-ajaran/{tahunAjaran}', [AdminTahunAjaranController::class, 'destroy'])->name('tahun-ajaran.destroy');
+
 
     // Laporan & Rekapitulasi
     Route::get('/laporan', [AdminLaporanController::class, 'index'])->name('laporan.index');

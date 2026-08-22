@@ -40,6 +40,7 @@
                         <th>Tahun Ajaran</th>
                         <th>Jumlah Kelas</th>
                         <th>Status</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,13 +55,39 @@
                                 <span class="badge badge-info">Arsip</span>
                             @endif
                         </td>
+                        <td style="display:flex; gap:0.5rem; align-items:center;">
+                            <form action="{{ route('admin.tahun-ajaran.toggle-status', $ta->id_tahun_ajaran) }}" method="POST" style="margin:0;">
+                                @csrf
+                                @method('PATCH')
+                                @if($ta->status_aktif)
+                                    <button type="submit" class="btn btn-secondary btn-sm" title="Jadikan Arsip">
+                                        Nonaktifkan
+                                    </button>
+                                @else
+                                    <button type="submit" class="btn btn-gold btn-sm" title="Jadikan Tahun Ajaran Utama">
+                                        Set Aktif
+                                    </button>
+                                @endif
+                            </form>
+
+                            <form action="{{ route('admin.tahun-ajaran.destroy', $ta->id_tahun_ajaran) }}" method="POST"
+                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus tahun ajaran {{ $ta->nama_tahun_ajaran }}?')"
+                                  style="margin:0;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Hapus
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="3" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Belum ada data tahun ajaran.</td>
+                        <td colspan="4" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Belum ada data tahun ajaran.</td>
                     </tr>
                     @endforelse
                 </tbody>
+
             </table>
         </div>
     </div>

@@ -2,11 +2,12 @@
 
 namespace App\Http\Middleware;
 
+//menagambil informasi
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class RoleMiddleware
+class RoleMiddleware //mengatut hak akses
 {
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
@@ -29,6 +30,7 @@ class RoleMiddleware
         return $next($request);
     }
 
+    //menentukan halaman dashboad 
     protected function getRoleDashboardRoute(string $role): string
     {
         switch ($role) {

@@ -8,7 +8,7 @@
     <p style="color:var(--text-muted); margin:0.25rem 0 0 0; font-size:0.875rem;">Ringkasan statistik dan aktivitas pelayanan konseling siswa SMKN 2 Guguak.</p>
 </div>
 
-{{-- Statistik Utama Berdasarkan ERD --}}
+{{-- Statistik Utama --}}
 <div class="grid-4" style="margin-bottom:1.5rem;">
     <div class="stat-card">
         <span class="stat-lbl">Total Siswa Aktif</span>

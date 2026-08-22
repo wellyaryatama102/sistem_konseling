@@ -10,8 +10,18 @@ use App\Models\TindakLanjut;
 use App\Models\SuratPanggilan;
 use App\Models\JadwalKetersediaan;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
 class SystemComplianceTest extends TestCase
 {
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed();
+    }
+
     public function test_guest_redirected_to_login()
     {
         $response = $this->get('/admin/dashboard');
@@ -27,11 +37,13 @@ class SystemComplianceTest extends TestCase
         $this->get(route('admin.users.index'))->assertStatus(200);
         $this->get(route('admin.siswa.index'))->assertStatus(200);
         $this->get(route('admin.kelas.index'))->assertStatus(200);
+        $this->get(route('admin.jurusan.index'))->assertStatus(200);
         $this->get(route('admin.tahun-ajaran.index'))->assertStatus(200);
         $this->get(route('admin.log-aktivitas.index'))->assertStatus(200);
         $this->get(route('admin.pengaturan.index'))->assertStatus(200);
         $this->get(route('profile.edit'))->assertStatus(200);
     }
+
 
     public function test_guru_bk_access()
     {

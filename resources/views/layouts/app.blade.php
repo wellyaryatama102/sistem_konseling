@@ -292,9 +292,12 @@
                 <a href="{{ route('admin.users.index') }}" class="nav-item {{ request()->routeIs('admin.users*') ? 'active' : '' }}">Manajemen Pengguna</a>
                 <a href="{{ route('admin.siswa.index') }}" class="nav-item {{ request()->routeIs('admin.siswa*') ? 'active' : '' }}">Data Siswa</a>
                 <a href="{{ route('admin.kelas.index') }}" class="nav-item {{ request()->routeIs('admin.kelas*') ? 'active' : '' }}">Manajemen Kelas</a>
+                <a href="{{ route('admin.jurusan.index') }}" class="nav-item {{ request()->routeIs('admin.jurusan*') ? 'active' : '' }}">Manajemen Jurusan</a>
                 <a href="{{ route('admin.tahun-ajaran.index') }}" class="nav-item {{ request()->routeIs('admin.tahun-ajaran*') ? 'active' : '' }}">Tahun Ajaran</a>
+                <a href="{{ route('admin.log-aktivitas.index') }}" class="nav-item {{ request()->routeIs('admin.log-aktivitas*') ? 'active' : '' }}">Log Aktivitas System</a>
                 <a href="{{ route('admin.laporan.index') }}" class="nav-item {{ request()->routeIs('admin.laporan*') ? 'active' : '' }}">Laporan & Rekapitulasi</a>
                 <a href="{{ route('admin.pengaturan.index') }}" class="nav-item {{ request()->routeIs('admin.pengaturan*') ? 'active' : '' }}">Pengaturan Sistem</a>
+
 
             @elseif(auth()->user()->role === 'guru_bk')
                 <!-- Modul 3: Guru BK (7 Menu Terpadu) -->

@@ -26,22 +26,29 @@ class UserController extends Controller
      */
     public function dashboard()
     {
+        $tahunAjaranAktif = \App\Models\TahunAjaran::where('status_aktif', true)->first();
+
         $stats = [
             'total_users' => User::count(),
             'active_users' => User::where('status', 'active')->count(),
             'inactive_users' => User::where('status', 'inactive')->count(),
             'total_siswa' => Siswa::where('status_siswa', 'aktif')->count(),
             'total_kelas' => Kelas::count(),
+            'total_jurusan' => \App\Models\Jurusan::count(),
             'guru_bk' => GuruBk::count(),
             'wali_kelas' => WaliKelas::count(),
             'wakasis' => Wakasis::count(),
             'kepala_sekolah' => Kepsek::count(),
+            'tahun_ajaran_aktif' => $tahunAjaranAktif ? $tahunAjaranAktif->nama_tahun_ajaran : '-',
         ];
 
+        $recentUsers = User::orderBy('created_at', 'desc')->take(6)->get();
         $recentLogs = WaLog::orderBy('created_at', 'desc')->take(6)->get();
 
-        return view('admin.dashboard', compact('stats', 'recentLogs'));
+        return view('admin.dashboard', compact('stats', 'recentUsers', 'recentLogs'));
     }
+
+
 
     /**
      * Menampilkan daftar pengguna
