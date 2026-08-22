@@ -15,7 +15,7 @@ jobs:
     - name: Menyiapkan PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2' # Ubah ke 8.3 jika Laravel 12 Anda menggunakan PHP 8.3
+        php-version: '8.3.33'
 
     - name: Install dependencies Laravel (Composer)
       run: composer install --no-dev --optimize-autoloader
