@@ -45,6 +45,13 @@ class SiswaController extends Controller
 
         return view('admin.siswa.index', compact('siswas', 'kelases'));
     }
+    /**
+     * Mengunduh data siswa ke Excel
+     */
+    public function export()
+    {
+        return Excel::download(new SiswaExport, 'Data_Siswa.xlsx');
+    }
 
     /**
      * Detail data dasar siswa

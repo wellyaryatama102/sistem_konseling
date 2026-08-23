@@ -50,9 +50,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
     Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
     Route::get('/users/export', [UserController::class, 'export'])->name('users.export');
+    
     // Data Siswa
     Route::resource('siswa', AdminSiswaController::class)->only(['index', 'show', 'edit', 'update', 'destroy']);
-
+    Route::get('/siswa/export', [AdminSiswaController::class, 'export'])->name('siswa.export');
+    
     // Manajemen Kelas & Jurusan
     Route::resource('kelas', AdminKelasController::class)->except(['show'])->parameters(['kelas' => 'kelas']);
     Route::resource('jurusan', AdminJurusanController::class)->except(['create', 'show'])->parameters(['jurusan' => 'jurusan']);

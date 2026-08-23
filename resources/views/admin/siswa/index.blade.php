@@ -12,17 +12,14 @@
 
 <div class="card">
     {{-- Form Pencarian & Filter --}}
-    <form action="{{ route('admin.siswa.index') }}" method="GET" style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
-        <input type="text" name="search" class="form-control" style="flex:1; min-width:200px;"
-               placeholder="Cari NIS, NISN, atau Nama Siswa..."
-               value="{{ request('search') }}">
+    <form action="{{ route('admin.siswa.index') }}" method="GET" style="display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap; align-items:center;">
+        
+        <input type="text" name="search" class="form-control" style="flex:1; min-width:200px;" placeholder="Cari NIS, NISN, atau Nama Siswa..." value="{{ request('search') }}">
 
-        <select name="id_kelas" class="form-control" style="width:180px;">
+        <select name="id_kelas" class="form-control" style="width:160px;">
             <option value="">-- Semua Kelas --</option>
             @foreach($kelases as $k)
-                <option value="{{ $k->id_kelas }}" {{ request('id_kelas') == $k->id_kelas ? 'selected' : '' }}>
-                    {{ $k->nama_kelas }}
-                </option>
+                <option value="{{ $k->id_kelas }}" {{ request('id_kelas') == $k->id_kelas ? 'selected' : '' }}>{{ $k->nama_kelas }}</option>
             @endforeach
         </select>
 
@@ -35,9 +32,19 @@
         </select>
 
         <button type="submit" class="btn btn-primary">Filter</button>
+        
         @if(request()->hasAny(['search', 'id_kelas', 'status_siswa']))
             <a href="{{ route('admin.siswa.index') }}" class="btn btn-secondary">Reset</a>
         @endif
+
+        {{-- TOMBOL UNDUH EXCEL DENGAN IKON & POSISI DI KANAN --}}
+        <a href="{{ route('admin.siswa.export') }}" class="btn btn-success" style="display:inline-flex; align-items:center; margin-left:auto;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 6px;">
+              <path d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z"/>
+              <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+            </svg>
+            Unduh Excel
+        </a>
     </form>
 
     {{-- Tabel Data Siswa --}}
