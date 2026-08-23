@@ -39,10 +39,11 @@
             margin: 0;
             padding: 0;
             display: flex;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        /* Sidebar Styling */
+        /* Sidebar */
         .sidebar {
             width: 270px;
             background-color: var(--primary);
@@ -80,7 +81,7 @@
             flex-direction: column;
             gap: 0.3rem;
             flex: 1;
-            overflow-y: auto;
+            overflow: visible;
         }
 
         .sidebar-heading {
@@ -126,12 +127,14 @@
             justify-content: space-between;
         }
 
-        /* Main Content Styling */
+        /* Main Content  */
         .main-wrapper {
             flex: 1;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
+            min-width: 0;
+            height: 100vh;
+            overflow: hidden;
         }
 
         .topbar {
@@ -147,6 +150,7 @@
         .content-area {
             padding: 2rem;
             flex: 1;
+            overflow-y: auto;
         }
 
         /* UI Card Components */
@@ -272,9 +276,85 @@
         .alert-success { background-color: #DCFCE7; color: #166534; border: 1px solid #BBF7D0; }
         .alert-danger { background-color: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
         .alert-warning { background-color: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
+
+        /* Responsive Hamburger & Offcanvas Sidebar */
+        .hamburger-btn {
+            display: none;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 0.4rem 0.6rem;
+            cursor: pointer;
+            color: var(--primary-dark);
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.15s ease;
+        }
+
+        .hamburger-btn:hover {
+            background-color: #F1F5F9;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+
+        .sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (max-width: 991.98px) {
+            .hamburger-btn {
+                display: inline-flex;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 270px;
+                z-index: 100;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+                box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .topbar {
+                padding: 0.75rem 1rem;
+            }
+
+            .content-area {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .topbar-badges {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
+
+    <!-- Overlay Gelap saat Mobile Sidebar Terbuka -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <!-- Sidebar Navigasi Berdasarkan 33 Wireframe Bab III -->
     <aside class="sidebar">
@@ -338,7 +418,7 @@
                 <a href="{{ route('wakasis.rekapitulasi.index') }}" class="nav-item {{ request()->routeIs('wakasis.rekapitulasi*') || request()->routeIs('wakasis.laporan*') ? 'active' : '' }}">Rekapitulasi & Laporan</a>
 
             @elseif(auth()->user()->role === 'kepala_sekolah')
-                <!-- Modul 7: Kepala Sekolah -->
+                <!-- Modul7: Kepala Sekolah -->
                 <div class="sidebar-heading">Kepala Sekolah</div>
                 <a href="{{ route('kepsek.dashboard') }}" class="nav-item {{ request()->routeIs('kepsek.dashboard') ? 'active' : '' }}">Dashboard Eksekutif</a>
                 <a href="{{ route('profile.edit') }}" class="nav-item {{ request()->routeIs('profile.edit') ? 'active' : '' }}">Profil Saya</a>
@@ -366,11 +446,20 @@
     <!-- Main Content Wrapper -->
     <div class="main-wrapper">
         <header class="topbar">
-            <div>
-                <div style="font-weight:700; font-size:1.125rem; color:var(--primary-dark);">SMK Negeri 2 Guguak</div>
-                <div style="font-size:0.75rem; color:var(--text-muted);">Sistem Informasi Layanan Konseling Siswa (SIKS)</div>
-            </div>
             <div style="display:flex; align-items:center; gap:0.75rem;">
+                <button type="button" class="hamburger-btn" onclick="toggleSidebar()" aria-label="Toggle Menu">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div>
+                    <div style="font-weight:700; font-size:1.125rem; color:var(--primary-dark);">SMK Negeri 2 Guguak</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">Sistem Informasi Layanan Konseling Siswa (SIKS)</div>
+                </div>
+            </div>
+            <div class="topbar-badges" style="display:flex; align-items:center; gap:0.75rem;">
                 <span class="badge badge-gold">Tahun Ajaran 2026/2027</span>
                 <span class="badge badge-success">Aktif</span>
             </div>
@@ -405,6 +494,24 @@
     </div>
 
     <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (sidebar && overlay) {
+                sidebar.classList.toggle('show');
+                overlay.classList.toggle('show');
+            }
+        }
+
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 992) {
+                const sidebar = document.querySelector('.sidebar');
+                const overlay = document.getElementById('sidebar-overlay');
+                if (sidebar) sidebar.classList.remove('show');
+                if (overlay) overlay.classList.remove('show');
+            }
+        });
+
         function togglePasswordVisibility(inputId, btn) {
             const input = document.getElementById(inputId);
             if (!input) return;

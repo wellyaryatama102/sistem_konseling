@@ -49,7 +49,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
     Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
-
+    Route::get('/users/export', [UserController::class, 'export'])->name('users.export');
     // Data Siswa
     Route::resource('siswa', AdminSiswaController::class)->only(['index', 'show', 'edit', 'update', 'destroy']);
 
@@ -81,7 +81,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 // 2. GURU BK ROUTES 
 Route::middleware(['auth', 'role:guru_bk'])->prefix('guru-bk')->name('guru.')->group(function () {
     // 1. Dashboard Guru BK
-    Route::get('/dashboard', [GuruBkController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [GuruBkController::class, 'dashboard'])->name('guru.dashboard');
 
     // 2. Pengajuan Konseling
     Route::get('/pengajuan', [GuruBkController::class, 'indexPengajuan'])->name('pengajuan.index');

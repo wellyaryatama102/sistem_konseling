@@ -18,12 +18,12 @@ use App\Models\WaLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
-    /**
-     * Dashboard Admin
-     */
+    //Dashboard Admin
     public function dashboard()
     {
         $tahunAjaranAktif = \App\Models\TahunAjaran::where('status_aktif', true)->first();
@@ -50,9 +50,7 @@ class UserController extends Controller
 
 
 
-    /**
-     * Menampilkan daftar pengguna
-     */
+    // Menampilkan daftar pengguna
     public function index(Request $request)
     {
         $query = User::query();
@@ -86,18 +84,19 @@ class UserController extends Controller
 
         return view('admin.users.index', compact('users'));
     }
-
-    /**
-     * Form tambah pengguna
-     */
+    
+    // Form export pengguna
+    public function export()
+        {
+            return Excel::download(new UsersExport, 'Data_Pengguna.xlsx');
+        }
+    //Form tambah pengguna
     public function create()
     {
         return view('admin.users.create');
     }
 
-    /**
-     * Menyimpan pengguna baru
-     */
+    // Menyimpan pengguna baru
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -118,23 +117,19 @@ class UserController extends Controller
             'status' => $validated['status'],
         ]);
 
-        // Sinkronkan ke entitas ERD sesuai role
+        // Sinkronkan ke entitas
         $this->syncUserEntity($user);
 
         return redirect()->route('admin.users.index')->with('success', 'Akun pengguna berhasil didaftarkan.');
     }
 
-    /**
-     * Form edit pengguna
-     */
+    //Form edit pengguna
     public function edit(User $user)
     {
         return view('admin.users.edit', compact('user'));
     }
 
-    /**
-     * Memperbarui data pengguna
-     */
+    // Memperbarui data pengguna
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
@@ -159,9 +154,6 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'Data akun pengguna berhasil diperbarui.');
     }
 
-    /**
-     * Helper to synchronize User with corresponding ERD entity
-     */
     private function syncUserEntity(User $user)
     {
         if ($user->role === 'admin') {
@@ -209,9 +201,7 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Mengubah status pengguna
-     */
+    //Mengubah status pengguna
     public function toggleStatus(User $user)
     {
         $newStatus = $user->status === 'active' ? 'inactive' : 'active';
@@ -221,9 +211,7 @@ class UserController extends Controller
         return back()->with('success', $message);
     }
 
-    /**
-     * Reset password pengguna
-     */
+    // Reset password pengguna
     public function resetPassword(Request $request, User $user)
     {
         $validated = $request->validate([
