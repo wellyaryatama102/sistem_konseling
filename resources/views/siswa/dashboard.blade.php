@@ -1,3 +1,4 @@
+{{-- VIEW DASHBOARD SISWA: Beranda utama siswa untuk melihat statistik konseling & notifikasi tindak lanjut --}}
 @extends('layouts.app')
 @section('title', 'Beranda Siswa')
 

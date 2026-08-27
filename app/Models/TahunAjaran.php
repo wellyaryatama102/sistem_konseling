@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam periode akademik tahun ajaran dan status aktifnya (aktif / nonaktif).
+ */
 class TahunAjaran extends Model
 {
     use HasFactory;

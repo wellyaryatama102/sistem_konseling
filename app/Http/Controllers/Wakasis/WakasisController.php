@@ -17,6 +17,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
+/**
+ * FUNGSI FILE INI:
+ * Menangani portal Wakasis Kesiswaan untuk memantau rekapitulasi konseling per jurusan/kelas dan ekspor laporan.
+ */
 class WakasisController extends Controller
 {
     /**

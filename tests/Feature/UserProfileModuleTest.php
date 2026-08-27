@@ -48,7 +48,7 @@ class UserProfileModuleTest extends TestCase
             'email' => 'admin_new@smkn2guguak.sch.id',
         ]);
 
-        $this->assertDatabaseHas('admin_profiles', [
+        $this->assertDatabaseHas('admin', [
             'user_id' => $user->id,
             'nip' => '198510102010011001',
             'no_hp' => '081234567890',
@@ -68,7 +68,7 @@ class UserProfileModuleTest extends TestCase
         ]);
 
         $response->assertStatus(302);
-        $response->assertSessionHas('success', 'Password berhasil diubah.');
+        $response->assertSessionHas('success', 'Kata sandi Anda telah berhasil diubah.');
 
         // Re-fetch user and attempt to check password
         $user->refresh();
@@ -92,26 +92,20 @@ class UserProfileModuleTest extends TestCase
             'tanggal_lahir' => '2008-05-12',
             'alamat' => 'Jl. Tan Bawa No. 12, Guguak',
             'no_wa_siswa' => '081234567891',
-            'kelas_id' => $kelas->id,
-            'status_siswa' => 'aktif',
-            'nama_ayah' => 'Bambang Saputra',
-            'nama_ibu' => 'Sari Saputri',
-            'no_wa_ortu' => '081298765431',
-            'alamat_ortu' => 'Jl. Tan Bawa No. 12, Guguak',
+            'id_kelas' => $kelas->id_kelas,
+            'nama_orang_tua_wali' => 'Bambang Saputra',
+            'no_wa_orang_tua_wali' => '081298765431',
         ]);
 
         $response->assertStatus(302);
-        $response->assertSessionHas('success', 'Profil berhasil diperbarui.');
+        $response->assertSessionHas('success', 'Profil Anda telah berhasil diperbarui.');
 
-        $this->assertDatabaseHas('siswas', [
+        $this->assertDatabaseHas('siswa', [
             'user_id' => $siswaUser->id,
             'nis' => '20261001',
             'nisn' => '0089123456',
-            'nama_ayah' => 'Bambang Saputra',
-            'nama_ibu' => 'Sari Saputri',
-            'no_wa_ortu' => '081298765431',
-            'alamat_ortu' => 'Jl. Tan Bawa No. 12, Guguak',
-            'is_profile_complete' => 1,
+            'nama_orang_tua_wali' => 'Bambang Saputra',
+            'no_wa_orang_tua_wali' => '081298765431',
         ]);
     }
 }

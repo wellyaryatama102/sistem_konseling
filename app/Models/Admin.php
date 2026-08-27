@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam data profil Administrator sistem.
+ */
 class Admin extends Model
 {
     use HasFactory;

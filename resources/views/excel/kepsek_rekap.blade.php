@@ -1,8 +1,7 @@
-<!-- PANGGIL KOP SURAT OTOMATIS -->
-@include('components.kop-surat')
-
 <table style="width: 100%; border-collapse: collapse;">
-    {{-- JUDUL LAPORAN --}}
+    {{-- Panggil Kop versi Excel dengan 7 Kolom --}}
+    @include('components.kop-surat', ['isExcel' => true, 'colspan' => 7])
+
     <tr>
         <td colspan="7" style="text-align: center; font-weight: bold; font-size: 13pt; border: none;">
             @if($tipeRekap == 'kinerja_guru_bk')
@@ -21,7 +20,6 @@
     </tr>
     <tr><td colspan="7" style="border: none; height: 10px;"></td></tr>
 
-    {{-- KONTEN TABEL BERDASARKAN TIPE REKAP --}}
     @if($tipeRekap == 'kinerja_guru_bk')
         <thead>
             <tr>
@@ -94,16 +92,4 @@
             @endforeach
         </tbody>
     @endif
-
-    {{-- LEMBAR TANDA TANGAN / PENGESAHAN --}}
-    <tr><td colspan="7" style="border: none; height: 20px;"></td></tr>
-    <tr>
-        <td colspan="4" style="border: none;"></td>
-        <td colspan="3" style="text-align: center; border: none;">
-            Guguak, {{ date('d F Y') }}<br>
-            Kepala SMK Negeri 2 Guguak<br><br><br><br><br>
-            <strong>{{ $kepsek->nama_lengkap ?? auth()->user()->name }}</strong><br>
-            NIP. {{ $kepsek->nip ?? '19700101 199501 1 001' }}
-        </td>
-    </tr>
 </table>

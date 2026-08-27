@@ -7,6 +7,10 @@ use App\Models\Jurusan;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
+/**
+ * FUNGSI FILE INI:
+ * Menangani kelola data master jurusan / program keahlian di sekolah.
+ */
 class JurusanController extends Controller
 {
     /**

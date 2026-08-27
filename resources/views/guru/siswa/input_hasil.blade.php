@@ -1,3 +1,4 @@
+{{-- VIEW INPUT HASIL KONSELING: Formulir pencatatan hasil konseling, catatan rahasia BK, & 3 opsi tindak lanjut --}}
 @extends('layouts.app')
 @section('title', 'Input Hasil Konseling')
 

@@ -7,6 +7,10 @@ use App\Models\TahunAjaran;
 use App\Models\Kelas;
 use Illuminate\Http\Request;
 
+/**
+ * FUNGSI FILE INI:
+ * Menangani kelola data master periode tahun ajaran akademik dan pengaktifan semester berjalan.
+ */
 class TahunAjaranController extends Controller
 {
     /**

@@ -1,3 +1,4 @@
+{{-- VIEW DASHBOARD WALI KELAS: Beranda pemantauan statistik siswa binaan & rujukan alih tangan kasus ke BK --}}
 @extends('layouts.app')
 @section('title', 'Dashboard Wali Kelas')
 

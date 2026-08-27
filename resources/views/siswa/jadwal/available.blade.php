@@ -1,3 +1,4 @@
+{{-- VIEW PILIH JADWAL SISWA: Halaman pemilihan slot ketersediaan waktu Guru BK untuk konseling mandiri / pendampingan ortu --}}
 @extends('layouts.app')
 @section('title', 'Cari Slot Konseling')
 

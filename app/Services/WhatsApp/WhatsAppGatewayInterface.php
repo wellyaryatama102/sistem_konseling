@@ -2,6 +2,10 @@
 
 namespace App\Services\WhatsApp;
 
+/**
+ * FUNGSI FILE INI:
+ * Menjadi standar interface kontrak metode sendMessage() yang digunakan oleh seluruh driver WhatsApp.
+ */
 interface WhatsAppGatewayInterface
 {
     /**

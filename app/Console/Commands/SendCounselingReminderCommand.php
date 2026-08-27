@@ -7,6 +7,10 @@ use App\Models\JadwalKonseling;
 use App\Services\WhatsApp\WhatsAppNotificationService;
 use Carbon\Carbon;
 
+/**
+ * FUNGSI FILE INI:
+ * Menjalankan otomatisasi pengiriman pesan pengingat (Reminder H-1) via WhatsApp kepada siswa secara berkala.
+ */
 class SendCounselingReminderCommand extends Command
 {
     protected $signature = 'reminders:send';

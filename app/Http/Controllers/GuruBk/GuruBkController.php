@@ -24,6 +24,10 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
+/**
+ * FUNGSI FILE INI:
+ * Menangani operasional layanan Bimbingan Konseling Guru BK (jadwal slot, validasi pengajuan, hasil konseling, tindak lanjut, & surat panggilan).
+ */
 class GuruBkController extends Controller
 {
     protected WhatsAppNotificationService $waService;
@@ -51,7 +55,7 @@ class GuruBkController extends Controller
     }
 
     /**
-     * 1. DASHBOARD GURU BK
+     * DASHBOARD GURU BK
      */
     public function dashboard()
     {
@@ -91,7 +95,7 @@ class GuruBkController extends Controller
     }
 
     /**
-     * 2. PENGAJUAN KONSELING
+     * PENGAJUAN KONSELING
      */
     public function indexPengajuan(Request $request)
     {
@@ -152,8 +156,7 @@ class GuruBkController extends Controller
                     'catatan_untuk_siswa' => $request->catatan_validasi ?? 'Silakan hadir tepat waktu di ruang BK.',
                 ]
             );
-
-            // Mengirim notifikasi WhatsApp ke Siswa
+            // PENGIRIMAN NOTIFIKASI WHATSAPP KE SISWA (PENGAJUAN DISETUJUI)
             if ($siswa && $siswa->no_wa_siswa) {
                 $tglStr = $slot ? Carbon::parse($slot->tanggal_tersedia)->format('d-m-Y') : date('d-m-Y');
                 $jamStr = $slot ? substr($slot->jam_mulai, 0, 5) : '-';
@@ -165,7 +168,7 @@ class GuruBkController extends Controller
                 $this->waService->send('siswa', $siswa->nama_siswa, $siswa->no_wa_siswa, 'persetujuan', $msg);
             }
 
-            // Notifikasi Sistem
+            // PENGIRIMAN NOTIFIKASI SISTEM (DATABASE) KE AKUN SISWA
             if ($siswa && $siswa->user_id) {
                 Notifikasi::create([
                     'user_id' => $siswa->user_id,
@@ -219,7 +222,7 @@ class GuruBkController extends Controller
     }
 
     /**
-     * 3. JADWAL & AGENDA KONSELING TERPADU (Tab Agenda Sesi & Tab Slot Ketersediaan)
+     * JADWAL & AGENDA KONSELING TERPADU (Tab Agenda Sesi & Tab Slot Ketersediaan)
      */
     public function indexJadwal(Request $request)
     {
@@ -265,7 +268,7 @@ class GuruBkController extends Controller
     }
 
     /**
-     * 4. KETERSEDIAAN JADWAL (Redirect to unified Jadwal menu)
+     * KETERSEDIAAN JADWAL (Redirect to unified Jadwal menu)
      */
     public function indexKetersediaan(Request $request)
     {
@@ -310,7 +313,7 @@ class GuruBkController extends Controller
     }
 
     /**
-     * 5. LAYANAN KONSELING & SESI
+     * LAYANAN KONSELING & SESI
      */
     public function indexLayanan(Request $request)
     {
@@ -476,7 +479,7 @@ class GuruBkController extends Controller
     }
 
     /**
-     * 6. RIWAYAT SISWA TERPADU (Tab Direktori Siswa & Log Riwayat Konseling)
+     *RIWAYAT SISWA TERPADU (Tab Direktori Siswa & Log Riwayat Konseling)
      */
     public function indexSiswa(Request $request)
     {
@@ -510,7 +513,7 @@ class GuruBkController extends Controller
 
         $siswas = $querySiswa->orderBy('nama_siswa')->paginate(15, ['*'], 'page_siswa')->withQueryString();
 
-        // 2. Riwayat Konseling Global
+        // Riwayat Konseling Global
         $queryRiwayat = SesiKonseling::with([
             'pengajuan.siswa.kelas.jurusan',
             'pengajuan.jadwal.guruBk',
@@ -557,7 +560,7 @@ class GuruBkController extends Controller
     }
 
     /**
-     * 7. TINDAK LANJUT & SURAT PANGGILAN
+     * TINDAK LANJUT & SURAT PANGGILAN
      */
     public function indexTindakLanjut(Request $request)
     {
@@ -619,7 +622,7 @@ class GuruBkController extends Controller
     }
 
     /**
-     * 8. SURAT PANGGILAN ORANG TUA / WALI (Redirect to unified Tindak Lanjut & Surat)
+     * SURAT PANGGILAN ORANG TUA / WALI (Redirect to unified Tindak Lanjut & Surat)
      */
     public function indexSurat(Request $request)
     {
@@ -728,7 +731,7 @@ class GuruBkController extends Controller
     }
 
     /**
-     * 9. LOG NOTIFIKASI WHATSAPP 
+     * LOG NOTIFIKASI WHATSAPP 
      */
     public function indexNotifikasi(Request $request)
     {
@@ -748,7 +751,7 @@ class GuruBkController extends Controller
     }
 
     /**
-     * 10. LAPORAN & REKAPITULASI LAYANAN BK
+     * LAPORAN & REKAPITULASI LAYANAN BK
      * 2 Menu Utama: Laporan Pelayanan Konseling & Laporan Surat Panggilan Orang Tua 
      */
     public function laporan(Request $request)

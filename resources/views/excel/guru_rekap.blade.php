@@ -1,8 +1,7 @@
-<!-- PANGGIL KOP SURAT OTOMATIS -->
-@include('components.kop-surat')
-
 <table style="width: 100%; border-collapse: collapse;">
-    {{-- JUDUL LAPORAN --}}
+    {{-- Panggil Kop versi Excel dengan 12 Kolom --}}
+    @include('components.kop-surat', ['isExcel' => true, 'colspan' => 12])
+
     <tr>
         <td colspan="12" style="text-align: center; font-weight: bold; font-size: 13pt; border: none;">
             @if(($tipeRekap ?? 'layanan_konseling') == 'surat_panggilan')
@@ -97,7 +96,7 @@
         </tbody>
     @endif
 
-    <tr><td colspan="12" style="border: none; height: 20px;"></td></tr>
+    <tr><td colspan="11" style="border: none; height: 20px;"></td></tr>
 
     {{-- TANDA TANGAN PEJABAT --}}
     <tr>
@@ -107,7 +106,7 @@
             <strong><u>{{ $kepsek->nama_lengkap ?? 'Dr. Hj. Indrawati, M.Pd.' }}</u></strong><br>
             NIP. {{ $kepsek->nip ?? '19681125 199403 2 001' }}
         </td>
-        <td colspan="2" style="border: none;"></td>
+        <td colspan="1" style="border: none;"></td>
         <td colspan="5" style="text-align: center; border: none;">
             Guguak, {{ date('d F Y') }}<br>
             Guru Bimbingan dan Konseling<br><br><br><br>

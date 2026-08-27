@@ -1,3 +1,4 @@
+{{-- VIEW BUAT SURAT PANGGILAN: Formulir penerbitan Surat Panggilan Resmi Orang Tua / Wali oleh Guru BK --}}
 @extends('layouts.app')
 @section('title', 'Buat Surat Panggilan')
 

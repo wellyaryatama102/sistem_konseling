@@ -1,3 +1,4 @@
+{{-- VIEW PRATINJAU SURAT PANGGILAN: Tampilan cetak kop surat panggilan resmi & tombol pengiriman WA Gateway --}}
 @extends('layouts.app')
 @section('title', 'Pratinjau Surat Panggilan')
 
@@ -19,12 +20,8 @@
         </div>
 
         <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-            <button onclick="window.print()" class="btn btn-secondary">
-                Cetak Surat
-            </button>
-            <a href="{{ route('guru.surat.pdf', $surat->id_surat) }}" class="btn btn-primary">
-                Download PDF
-            </a>
+            <button onclick="window.print()" class="btn btn-secondary">Cetak Surat</button>
+            <a href="{{ route('guru.surat.pdf', $surat->id_surat) }}" class="btn btn-primary">Download PDF</a>
             <form action="{{ route('guru.surat.kirim-wa', $surat->id_surat) }}" method="POST">
                 @csrf
                 <button type="submit" class="btn btn-{{ $surat->status_kirim_wa == 'gagal' ? 'danger' : 'success' }}"

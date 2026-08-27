@@ -1,3 +1,4 @@
+{{-- VIEW DASHBOARD GURU BK: Beranda statistik layanan konseling, pengajuan masuk, & sesi terjadwal --}}
 @extends('layouts.app')
 @section('title', 'Dashboard Guru BK')
 

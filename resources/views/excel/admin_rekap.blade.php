@@ -1,25 +1,9 @@
-<table>
-    {{-- KOP SURAT RESMI SEKOLAH --}}
-    <tr>
-        <td colspan="{{ ($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas' ? 9 : 15 }}" style="text-align: center; font-weight: bold; font-size: 13pt;">PEMERINTAH PROVINSI SUMATERA BARAT</td>
-    </tr>
-    <tr>
-        <td colspan="{{ ($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas' ? 9 : 15 }}" style="text-align: center; font-weight: bold; font-size: 14pt;">DINAS PENDIDIKAN</td>
-    </tr>
-    <tr>
-        <td colspan="{{ ($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas' ? 9 : 15 }}" style="text-align: center; font-weight: bold; font-size: 16pt;">SMK NEGERI 2 GUGUAK</td>
-    </tr>
-    <tr>
-        <td colspan="{{ ($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas' ? 9 : 15 }}" style="text-align: center; font-size: 9pt; font-style: italic;">Jl. Raya Ampang Gadang, Kec. Guguak, Kab. Lima Puluh Kota, Sumatera Barat 26253</td>
-    </tr>
-    <tr>
-        <td colspan="{{ ($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas' ? 9 : 15 }}" style="border-bottom: 2px solid #000000;"></td>
-    </tr>
-    <tr><td colspan="{{ ($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas' ? 9 : 15 }}"></td></tr>
+<table style="width: 100%; border-collapse: collapse;">
+    {{-- Panggil Kop versi Excel dengan 15 Kolom --}}
+    @include('components.kop-surat', ['isExcel' => true, 'colspan' => 15])
 
-    {{-- JUDUL LAPORAN --}}
     <tr>
-        <td colspan="{{ ($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas' ? 9 : 15 }}" style="text-align: center; font-weight: bold; font-size: 13pt;">
+        <td colspan="15" style="text-align: center; font-weight: bold; font-size: 13pt;">
             @if(($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas')
                 LAPORAN DATA ROMBONGAN BELAJAR &amp; DISTRIBUSI SISWA
             @else
@@ -28,7 +12,7 @@
         </td>
     </tr>
     <tr>
-        <td colspan="{{ ($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas' ? 9 : 15 }}" style="text-align: center; font-size: 10pt;">
+        <td colspan="15" style="text-align: center; font-size: 10pt;">
             @php
                 $selectedTaName = !empty($request['id_tahun_ajaran']) ? ($tahunAjarans->firstWhere('id_tahun_ajaran', $request['id_tahun_ajaran'])->nama_tahun_ajaran ?? 'Semua') : 'Semua Tahun Ajaran';
                 $semesterText = !empty($request['semester']) ? ' | Semester ' . ucfirst($request['semester']) : '';
@@ -37,7 +21,7 @@
             Tahun Ajaran: {{ $selectedTaName }}{{ $semesterText }}{{ $bulanText }} | Tanggal Cetak: {{ date('d/m/Y H:i') }} WIB
         </td>
     </tr>
-    <tr><td colspan="{{ ($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas' ? 9 : 15 }}"></td></tr>
+    <tr><td colspan="15"></td></tr>
 
     {{-- KONTEN TABEL BERDASARKAN TIPE REKAP --}}
     @if(($tipeRekap ?? 'layanan_konseling') == 'layanan_konseling')

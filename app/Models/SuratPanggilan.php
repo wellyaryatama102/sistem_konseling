@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam data Surat Panggilan Resmi Orang Tua / Wali serta status pengiriman notifikasi via WA Gateway.
+ */
 class SuratPanggilan extends Model
 {
     use HasFactory;

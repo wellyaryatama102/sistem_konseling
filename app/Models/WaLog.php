@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam riwayat audit log pengiriman notifikasi pesan WhatsApp Gateway Fonnte API.
+ */
 class WaLog extends Model
 {
     use HasFactory;

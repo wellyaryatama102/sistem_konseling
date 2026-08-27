@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam data profil Kepala Sekolah untuk pengesahan & pengunduhan laporan eksekutif.
+ */
 class Kepsek extends Model
 {
     use HasFactory;

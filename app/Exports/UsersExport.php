@@ -7,6 +7,10 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
+/**
+ * FUNGSI FILE INI:
+ * Mengekspor daftar akun pengguna sistem ke format file Excel (.xlsx).
+ */
 class UsersExport implements FromCollection, WithHeadings, WithMapping
 {
     /**

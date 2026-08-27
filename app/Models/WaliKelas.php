@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam biodata Wali Kelas (NIP/NUPTK, nama, kontak) dan kelas binaan yang diampunya.
+ */
 class WaliKelas extends Model
 {
     use HasFactory;

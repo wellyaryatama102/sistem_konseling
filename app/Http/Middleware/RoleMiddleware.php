@@ -7,7 +7,11 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class RoleMiddleware //mengatut hak akses
+/**
+ * FUNGSI FILE INI:
+ * Mengamankan halaman aplikasi agar hanya dapat diakses oleh pengguna dengan role/hak akses yang sesuai.
+ */
+class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, ...$roles): Response
     {

@@ -1,3 +1,4 @@
+{{-- VIEW HALAMAN LOGIN: Form autentikasi masuk pengguna untuk seluruh 6 role --}}
 <!DOCTYPE html>
 <html lang="id">
 <head>

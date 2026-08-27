@@ -15,6 +15,10 @@ use Illuminate\Validation\Rule;
 use App\Exports\SiswaExport;
 use Maatwebsite\Excel\Facades\Excel;
 
+/**
+ * FUNGSI FILE INI:
+ * Menangani kelola data siswa (CRUD Siswa), penempatan kelas, kontak orang tua/wali, serta ekspor data ke Excel.
+ */
 class SiswaController extends Controller
 {
     // Menampilkan daftar data siswa
@@ -46,6 +50,72 @@ class SiswaController extends Controller
         $kelases = Kelas::orderBy('nama_kelas')->get();
 
         return view('admin.siswa.index', compact('siswas', 'kelases'));
+    }
+
+    // Form tambah data siswa baru
+    public function create()
+    {
+        $kelases = Kelas::orderBy('nama_kelas')->get();
+        return view('admin.siswa.create', compact('kelases'));
+    }
+
+    // Menyimpan data siswa baru beserta pembuatan akun penggunanya
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'nama_siswa' => 'required|string|max:255',
+            'username' => 'required|string|max:100|unique:users,username|unique:siswa,username',
+            'email' => 'nullable|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6',
+            'nis' => 'nullable|string|max:50|unique:siswa,nis',
+            'nisn' => 'nullable|string|max:50|unique:siswa,nisn',
+            'id_kelas' => 'nullable|exists:kelas,id_kelas',
+            'jenis_kelamin' => 'nullable|in:L,P',
+            'tempat_lahir' => 'nullable|string|max:100',
+            'tanggal_lahir' => 'nullable|date',
+            'agama' => 'nullable|string|max:50',
+            'alamat' => 'nullable|string',
+            'no_wa_siswa' => 'nullable|string|max:20',
+            'nama_orang_tua_wali' => 'nullable|string|max:255',
+            'no_wa_orang_tua_wali' => 'nullable|string|max:20',
+            'status_siswa' => 'required|in:aktif,lulus,pindah,do',
+        ]);
+
+        DB::transaction(function () use ($validated) {
+            $email = $validated['email'] ?? ($validated['username'] . '@siswa.smkn2guguak.sch.id');
+            
+            // 1. Buat akun pengguna (User)
+            $user = User::create([
+                'name' => $validated['nama_siswa'],
+                'username' => $validated['username'],
+                'email' => $email,
+                'password' => bcrypt($validated['password']),
+                'role' => 'siswa',
+                'status' => 'active',
+            ]);
+
+            // 2. Buat data pokok siswa
+            Siswa::create([
+                'user_id' => $user->id,
+                'username' => $validated['username'],
+                'password' => $user->password,
+                'nama_siswa' => $validated['nama_siswa'],
+                'nis' => $validated['nis'] ?? null,
+                'nisn' => $validated['nisn'] ?? null,
+                'id_kelas' => $validated['id_kelas'] ?? null,
+                'jenis_kelamin' => $validated['jenis_kelamin'] ?? null,
+                'tempat_lahir' => $validated['tempat_lahir'] ?? null,
+                'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
+                'agama' => $validated['agama'] ?? null,
+                'alamat' => $validated['alamat'] ?? null,
+                'no_wa_siswa' => $validated['no_wa_siswa'] ?? null,
+                'nama_orang_tua_wali' => $validated['nama_orang_tua_wali'] ?? null,
+                'no_wa_orang_tua_wali' => $validated['no_wa_orang_tua_wali'] ?? null,
+                'status_siswa' => $validated['status_siswa'],
+            ]);
+        });
+
+        return redirect()->route('admin.siswa.index')->with('success', 'Data siswa baru beserta akunnya berhasil ditambahkan.');
     }
 
     // Mengunduh data siswa ke Excel

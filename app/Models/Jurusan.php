@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam master data Program Keahlian / Jurusan di SMKN 2 Guguak.
+ */
 class Jurusan extends Model
 {
     use HasFactory;

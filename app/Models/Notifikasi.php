@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam pemberitahuan internal aplikasi untuk akun pengguna (persetujuan pengajuan, arahan jadwal, dll).
+ */
 class Notifikasi extends Model
 {
     use HasFactory;

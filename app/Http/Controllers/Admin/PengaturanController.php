@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 
+/**
+ * FUNGSI FILE INI:
+ * Mengonfigurasi parameter sistem sekolah, preferensi aplikasi, dan pengujian token Fonnte WA Gateway.
+ */
 class PengaturanController extends Controller
 {
     /**

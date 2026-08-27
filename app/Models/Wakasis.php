@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam data profil Wakil Kepala Sekolah Bidang Kesiswaan (Wakasis).
+ */
 class Wakasis extends Model
 {
     use HasFactory;

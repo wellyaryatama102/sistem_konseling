@@ -5,6 +5,10 @@ namespace App\Services\WhatsApp;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * FUNGSI FILE INI:
+ * Menghubungkan aplikasi dengan server Fonnte WhatsApp API menggunakan Token Fonnte pada file .env.
+ */
 class FonnteWhatsAppGateway implements WhatsAppGatewayInterface
 {
     protected string $url;

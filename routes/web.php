@@ -49,7 +49,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     
     // Data Siswa 
     Route::get('/siswa/export', [AdminSiswaController::class, 'export'])->name('siswa.export');
-    Route::resource('siswa', AdminSiswaController::class)->only(['index', 'show', 'edit', 'update', 'destroy']);
+    Route::resource('siswa', AdminSiswaController::class);
     
     // Manajemen Kelas & Jurusan
     Route::resource('kelas', AdminKelasController::class)->except(['show'])->parameters(['kelas' => 'kelas']);

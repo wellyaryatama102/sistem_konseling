@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam pelaksanaan bimbingan konseling, status kehadiran, hasil konseling, dan Catatan Rahasia Guru BK.
+ */
 class SesiKonseling extends Model
 {
     use HasFactory;

@@ -17,6 +17,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
+/**
+ * FUNGSI FILE INI:
+ * Menangani portal eksekutif Kepala Sekolah untuk pemantauan Indikator Kinerja Utama (IKU) BK dan pengesahan laporan.
+ */
 class KepalaSekolahController extends Controller
 {
     /**

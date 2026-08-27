@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * FUNGSI FILE INI:
+ * Menangani login, logout, dan pengarahan (redirect) pengguna ke dashboard sesuai dengan hak akses (role) masing-masing.
+ */
 class LoginController extends Controller
 {
     public function showLoginForm()

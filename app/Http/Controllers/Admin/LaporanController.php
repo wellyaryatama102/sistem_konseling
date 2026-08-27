@@ -19,6 +19,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * FUNGSI FILE INI:
+ * Menampilkan rekapitulasi laporan aktivitas bimbingan konseling secara keseluruhan serta ekspor ke PDF dan Excel.
+ */
 class LaporanController extends Controller
 {
     /**

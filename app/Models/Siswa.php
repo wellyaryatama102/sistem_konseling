@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam biodata siswa, NIS/NISN, nomor WhatsApp siswa & orang tua/wali, serta relasi kelas.
+ */
 class Siswa extends Model
 {
     use HasFactory;

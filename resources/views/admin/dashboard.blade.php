@@ -1,3 +1,4 @@
+{{-- VIEW DASHBOARD ADMIN: Beranda statistik master data akun, kelas, siswa, & log aktivitas sistem --}}
 @extends('layouts.app')
 @section('title', 'Dashboard Administrator')
 

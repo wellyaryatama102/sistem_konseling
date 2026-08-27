@@ -1,8 +1,7 @@
-<!-- PANGGIL KOP SURAT OTOMATIS -->
-@include('components.kop-surat')
-
 <table style="width: 100%; border-collapse: collapse;">
-    {{-- JUDUL LAPORAN --}}
+    {{-- Panggil Kop versi Excel dengan 7 Kolom --}}
+    @include('components.kop-surat', ['isExcel' => true, 'colspan' => 7])
+
     <tr>
         <td colspan="7" style="text-align: center; font-weight: bold; font-size: 13pt; border: none;">
             @if($tipeRekap == 'rekap_jurusan')
@@ -19,7 +18,6 @@
     </tr>
     <tr><td colspan="7" style="border: none; height: 10px;"></td></tr>
 
-    {{-- KONTEN TABEL BERDASARKAN TIPE REKAP --}}
     @if($tipeRekap == 'rekap_jurusan')
         <thead>
             <tr>
@@ -58,7 +56,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($sesiList as $index => $k)
+            @forelse($sesiList as $index => $k)
             <tr>
                 <td style="text-align: center; border: 1px solid #000000;">{{ $index + 1 }}</td>
                 <td style="text-align: center; border: 1px solid #000000;">{{ \Carbon\Carbon::parse($k->tanggal_pelaksanaan)->format('d/m/Y') }}</td>
@@ -68,25 +66,11 @@
                 <td style="text-align: center; border: 1px solid #000000;">{{ ucfirst($k->pengajuan->jenis_konseling ?? 'Individu') }}</td>
                 <td style="text-align: center; border: 1px solid #000000;">{{ strtoupper($k->status_sesi) }}</td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="7" style="text-align: center; border: 1px solid #000000;">Tidak ada data rekapitulasi.</td>
+            </tr>
+            @endforelse
         </tbody>
     @endif
-
-    {{-- LEMBAR TANDA TANGAN / PENGESAHAN --}}
-    <tr><td colspan="7" style="border: none; height: 20px;"></td></tr>
-    <tr>
-        <td colspan="3" style="text-align: center; border: none;">
-            Mengetahui,<br>
-            Kepala SMK Negeri 2 Guguak<br><br><br><br><br>
-            <strong>{{ $kepsek->nama_lengkap ?? 'Asvetinius, M.Pd' }}</strong><br>
-            NIP. {{ $kepsek->nip ?? '19700101 199501 1 001' }}
-        </td>
-        <td style="border: none;"></td>
-        <td colspan="3" style="text-align: center; border: none;">
-            Guguak, {{ date('d F Y') }}<br>
-            Wakil Kepala Sekolah Bidang Kesiswaan<br><br><br><br><br>
-            <strong>{{ $wakasis->nama_lengkap ?? auth()->user()->name }}</strong><br>
-            NIP. {{ $wakasis->nip ?? '-' }}
-        </td>
-    </tr>
 </table>

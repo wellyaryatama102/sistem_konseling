@@ -1,140 +1,93 @@
 @extends('layouts.app')
-@section('title', 'Detail Siswa - ' . $siswa->nama_siswa)
+@section('title', 'Detail Rekap Siswa')
 
 @section('content')
 
-<div style="max-width:1050px; margin:0 auto;">
+<div style="max-width:920px; margin:0 auto;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
         <div>
-            <h2 style="margin:0; font-size:1.5rem; font-weight:800; color:var(--primary-dark);">Profil & Histori Konseling Siswa</h2>
-            <p style="color:var(--text-muted); margin:0.25rem 0 0 0; font-size:0.875rem;">
-                Rekapitulasi data siswa, histori pengajuan, dan sesi tindak lanjut konseling.
-            </p>
+            <h2 style="margin:0; font-size:1.5rem; font-weight:800; color:var(--primary-dark);">Detail Rekap &amp; Perkembangan Siswa</h2>
+            <p style="color:var(--text-muted); margin:0.25rem 0 0 0; font-size:0.875rem;">Informasi identitas siswa dan riwayat bimbingan konseling.</p>
         </div>
-        <div style="display:flex; gap:0.5rem;">
-            <a href="{{ route('guru.siswa.index') }}" class="btn btn-secondary">
-                &larr; Riwayat Konseling
-            </a>
-        </div>
+        <a href="{{ route('guru.siswa.index') }}" class="btn btn-secondary">&larr; Kembali</a>
     </div>
 
-    {{-- 1. Profil Siswa --}}
+    {{-- Profil Siswa --}}
     <div class="card" style="margin-bottom:1.5rem;">
-        <h3 class="card-title" style="display:flex; align-items:center; gap:0.5rem; color:var(--primary-dark); border-bottom:1px solid var(--border-color); padding-bottom:0.75rem; margin-bottom:1rem;">
-            Profil Siswa SMKN 2 Guguak
-        </h3>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:1.5rem; font-size:0.875rem;">
+        <h3 class="card-title" style="margin-bottom:1rem;">Profil Siswa</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1rem; font-size:0.875rem;">
             <div>
-                <table style="width:100%; border-collapse:collapse;">
-                    <tr>
-                        <td style="font-weight:600; width:170px; padding:0.4rem 0; color:var(--text-muted);">Nama Lengkap</td>
-                        <td style="padding:0.4rem 0; font-weight:700; color:var(--text-dark);">: {{ $siswa->nama_siswa }}</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight:600; padding:0.4rem 0; color:var(--text-muted);">NIS / NISN</td>
-                        <td style="padding:0.4rem 0; font-weight:600;">: {{ $siswa->nis ?? '-' }} / {{ $siswa->nisn ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight:600; padding:0.4rem 0; color:var(--text-muted);">Jenis Kelamin</td>
-                        <td style="padding:0.4rem 0;">: {{ $siswa->jenis_kelamin == 'L' ? 'Laki-laki' : ($siswa->jenis_kelamin == 'P' ? 'Perempuan' : '-') }}</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight:600; padding:0.4rem 0; color:var(--text-muted);">Tempat, Tgl Lahir</td>
-                        <td style="padding:0.4rem 0;">: {{ $siswa->tempat_lahir ? $siswa->tempat_lahir . ', ' . $siswa->tanggal_lahir : '-' }}</td>
-                    </tr>
+                <table style="width:100%;">
+                    <tr><td style="font-weight:600; width:130px; padding:0.3rem 0; color:var(--text-muted);">Nama Siswa</td><td style="padding:0.3rem 0; font-weight:700;">: {{ $siswa->nama_siswa }}</td></tr>
+                    <tr><td style="font-weight:600; padding:0.3rem 0; color:var(--text-muted);">NIS / NISN</td><td style="padding:0.3rem 0;">: {{ $siswa->nis ?? '-' }} / {{ $siswa->nisn ?? '-' }}</td></tr>
+                    <tr><td style="font-weight:600; padding:0.3rem 0; color:var(--text-muted);">Kelas Binaan</td><td style="padding:0.3rem 0;">: {{ $siswa->kelas->nama_kelas ?? '-' }} ({{ $siswa->kelas->jurusan->nama_jurusan ?? '-' }})</td></tr>
+                    <tr><td style="font-weight:600; padding:0.3rem 0; color:var(--text-muted);">Wali Kelas</td><td style="padding:0.3rem 0;">: {{ $siswa->kelas->waliKelas->nama_lengkap ?? '-' }}</td></tr>
                 </table>
             </div>
             <div>
-                <table style="width:100%; border-collapse:collapse;">
-                    <tr>
-                        <td style="font-weight:600; width:170px; padding:0.4rem 0; color:var(--text-muted);">Kelas & Jurusan</td>
-                        <td style="padding:0.4rem 0; font-weight:600;">: {{ $siswa->kelas->nama_kelas ?? '-' }} ({{ $siswa->kelas->jurusan->nama_jurusan ?? '-' }})</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight:600; padding:0.4rem 0; color:var(--text-muted);">Wali Kelas</td>
-                        <td style="padding:0.4rem 0;">: {{ $siswa->kelas->waliKelas->nama_lengkap ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight:600; padding:0.4rem 0; color:var(--text-muted);">No. WhatsApp Siswa</td>
-                        <td style="padding:0.4rem 0;">: <code>{{ $siswa->no_wa_siswa ?? '-' }}</code></td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight:600; padding:0.4rem 0; color:var(--text-muted);">Orang Tua & No. WA</td>
-                        <td style="padding:0.4rem 0;">: {{ $siswa->nama_orang_tua_wali ?: '-' }} (<code>{{ $siswa->no_wa_orang_tua_wali ?: '-' }}</code>)</td>
-                    </tr>
+                <table style="width:100%;">
+                    <tr><td style="font-weight:600; width:140px; padding:0.3rem 0; color:var(--text-muted);">No. WA Siswa</td><td style="padding:0.3rem 0;">: <code>{{ $siswa->no_wa_siswa ?? '-' }}</code></td></tr>
+                    <tr><td style="font-weight:600; padding:0.3rem 0; color:var(--text-muted);">Nama Orang Tua</td><td style="padding:0.3rem 0;">: {{ $siswa->nama_orang_tua_wali ?: '-' }}</td></tr>
+                    <tr><td style="font-weight:600; padding:0.3rem 0; color:var(--text-muted);">No. WA Orang Tua</td><td style="padding:0.3rem 0;">: <code>{{ $siswa->no_wa_orang_tua_wali ?: '-' }}</code></td></tr>
+                    <tr><td style="font-weight:600; padding:0.3rem 0; color:var(--text-muted);">Status Siswa</td><td style="padding:0.3rem 0;"><span class="badge badge-success">{{ strtoupper($siswa->status_siswa) }}</span></td></tr>
                 </table>
             </div>
         </div>
     </div>
 
-    {{-- 2. Histori Sesi Konseling Siswa --}}
+    {{-- Riwayat Bimbingan Konseling --}}
     <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid var(--border-color); padding-bottom:0.75rem;">
-            <h3 class="card-title" style="margin:0; color:var(--primary-dark);">
-                Histori Sesi Konseling & Tindak Lanjut
-            </h3>
-            <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Total: {{ $riwayatPengajuan->count() }} Pengajuan</span>
-        </div>
-
+        <h3 class="card-title" style="margin-bottom:1rem;">Riwayat Bimbingan &amp; Layanan Konseling</h3>
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
-                        <th>Tgl Pengajuan</th>
-                        <th>Sumber & Jenis</th>
-                        <th>Alasan Permasalahan</th>
-                        <th>Status Pengajuan</th>
-                        <th>Hasil Konseling</th>
-                        <th>Tindak Lanjut</th>
-                        <th style="text-align:center;">Aksi</th>
+                        <th style="width:35px; text-align:center;">No</th>
+                        <th>Tanggal Sesi</th>
+                        <th>Jenis &amp; Sumber</th>
+                        <th>Alasan Konseling</th>
+                        <th>Hasil &amp; Arahan BK</th>
+                        <th>Status Sesi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($riwayatPengajuan as $p)
-                    @php
-                        $sesi = $p->sesiKonseling;
-                    @endphp
+                    @forelse($riwayatPengajuan as $idx => $p)
                     <tr>
-                        <td><small style="font-weight:700;">{{ $p->created_at ? $p->created_at->format('d/m/Y') : '-' }}</small></td>
+                        <td style="text-align:center; color:var(--text-muted);">{{ $idx + 1 }}</td>
                         <td>
-                            <span class="badge badge-info">{{ ucfirst($p->sumber_pengajuan) }}</span><br>
-                            <small>{{ ucfirst($p->jenis_konseling) }}</small>
-                        </td>
-                        <td style="max-width:180px; font-size:0.8rem;">
-                            {{ \Illuminate\Support\Str::limit($p->alasan_pengajuan, 45) }}
+                            <strong>{{ \Carbon\Carbon::parse($p->tanggal_pengajuan)->format('d/m/Y') }}</strong>
+                            @if($p->jadwal)
+                                <br><small style="color:var(--text-muted);">{{ substr($p->jadwal->jam_mulai, 0, 5) }} WIB</small>
+                            @endif
                         </td>
                         <td>
-                            @if($p->status_pengajuan == 'disetujui')
+                            <span class="badge badge-info">{{ ucfirst($p->jenis_konseling) }}</span><br>
+                            <small style="color:var(--text-muted);">{{ ucfirst($p->sumber_pengajuan) }}</small>
+                        </td>
+                        <td style="max-width:200px; font-size:0.85rem;">{{ $p->alasan_pengajuan }}</td>
+                        <td style="max-width:220px; font-size:0.85rem;">
+                            @if($p->sesiKonseling && $p->sesiKonseling->hasil_konseling)
+                                <div style="font-weight:600; color:var(--primary-dark);">{{ $p->sesiKonseling->hasil_konseling }}</div>
+                                @if($p->sesiKonseling->catatan_untuk_siswa)
+                                    <small style="color:var(--text-muted);">Arahan: {{ $p->sesiKonseling->catatan_untuk_siswa }}</small>
+                                @endif
+                            @else
+                                <span style="color:var(--text-muted); font-style:italic;">Belum ada catatan hasil</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($p->status_pengajuan === 'disetujui')
                                 <span class="badge badge-success">Disetujui</span>
-                            @elseif($p->status_pengajuan == 'menunggu_validasi')
+                            @elseif($p->status_pengajuan === 'menunggu_validasi')
                                 <span class="badge badge-warning">Menunggu</span>
                             @else
-                                <span class="badge badge-danger">{{ strtoupper($p->status_pengajuan) }}</span>
-                            @endif
-                        </td>
-                        <td style="max-width:200px; font-size:0.8rem;">
-                            {{ $sesi && $sesi->hasil_konseling ? \Illuminate\Support\Str::limit($sesi->hasil_konseling, 45) : '-' }}
-                        </td>
-                        <td>
-                            @if($sesi && $sesi->tindakLanjuts->count() > 0)
-                                <span class="badge badge-gold">{{ ucfirst(str_replace('_', ' ', $sesi->tindakLanjuts->first()->jenis_aksi)) }}</span>
-                            @else
-                                <small style="color:var(--text-muted);">-</small>
-                            @endif
-                        </td>
-                        <td style="text-align:center;">
-                            @if($sesi)
-                                <a href="{{ route('guru.siswa.input-hasil', $sesi->id_sesi) }}" class="btn btn-primary btn-sm">
-                                    {{ $sesi->status_sesi == 'selesai' ? 'Detail' : 'Input Hasil' }}
-                                </a>
-                            @else
-                                <small style="color:var(--text-muted);">-</small>
+                                <span class="badge badge-danger">{{ ucfirst($p->status_pengajuan) }}</span>
                             @endif
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">
+                        <td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">
                             Belum ada riwayat konseling untuk siswa ini.
                         </td>
                     </tr>

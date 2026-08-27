@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam data rombongan belajar / kelas siswa (nama kelas, tingkat kelas X/XI/XII).
+ */
 class Kelas extends Model
 {
     use HasFactory;

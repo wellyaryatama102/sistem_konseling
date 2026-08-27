@@ -13,6 +13,10 @@ use App\Services\WhatsApp\WhatsAppNotificationService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
+/**
+ * FUNGSI FILE INI:
+ * Menangani portal wali kelas untuk memantau siswa binaan, pengajuan rujukan alih tangan kasus ke Guru BK, serta monitoring.
+ */
 class WaliKelasController extends Controller
 {
     protected WhatsAppNotificationService $waService;
@@ -28,15 +32,21 @@ class WaliKelasController extends Controller
     private function getWaliKelasData()
     {
         $user = auth()->user();
-        $wali = WaliKelas::firstOrCreate(
-            ['user_id' => $user->id],
-            [
+        $wali = WaliKelas::where('user_id', $user->id)
+            ->orWhere('username', $user->username)
+            ->first();
+
+        if (!$wali) {
+            $wali = WaliKelas::create([
+                'user_id' => $user->id,
                 'username' => $user->username,
                 'password' => $user->password,
                 'nama_lengkap' => $user->name,
                 'email' => $user->email,
-            ]
-        );
+            ]);
+        } elseif (!$wali->user_id) {
+            $wali->update(['user_id' => $user->id]);
+        }
 
         $kelas = Kelas::with(['jurusan', 'tahunAjaran'])->where('id_wali_kelas', $wali->id_wali_kelas)->first();
 
@@ -137,7 +147,11 @@ class WaliKelasController extends Controller
     public function showSiswa(Siswa $siswa)
     {
         [$wali, $kelas] = $this->getWaliKelasData();
-        if (!$kelas || $siswa->id_kelas !== $kelas->id_kelas) {
+        if (!$kelas) {
+            return view('wali.no_kelas', compact('wali'));
+        }
+
+        if ((int)$siswa->id_kelas !== (int)$kelas->id_kelas) {
             abort(403, 'Anda tidak diperbolehkan mengakses data siswa dari kelas lain.');
         }
 

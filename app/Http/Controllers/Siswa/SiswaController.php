@@ -13,6 +13,10 @@ use App\Services\WhatsApp\WhatsAppNotificationService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
+/**
+ * FUNGSI FILE INI:
+ * Menangani akses portal siswa untuk pengajuan jadwal konseling mandiri, memilih slot lanjutan pendampingan ortu, dan memantau sesi.
+ */
 class SiswaController extends Controller
 {
     protected WhatsAppNotificationService $waService;
@@ -22,9 +26,6 @@ class SiswaController extends Controller
         $this->waService = $waService;
     }
 
-    /**
-     * Helper to get or create Siswa record for current authenticated user.
-     */
     private function getCurrentSiswa(): Siswa
     {
         $user = auth()->user();
@@ -42,9 +43,7 @@ class SiswaController extends Controller
     /**
      * 1. BERANDA SISWA
      */
-    /**
-     * Helper to get pending Tindak Lanjut Pemanggilan Orang Tua for current student.
-     */
+   
     private function getPendingTindakLanjutOrtu(Siswa $siswa)
     {
         return \App\Models\TindakLanjut::with(['sesiKonseling.pengajuan.siswa', 'suratPanggilans'])
@@ -208,8 +207,8 @@ class SiswaController extends Controller
                     'waktu_pertemuan' => $slot->jam_mulai,
                 ]);
             }
-
-            // Kirim notifikasi WA ke Guru BK
+            
+            // PENGIRIMAN NOTIFIKASI WHATSAPP KE GURU BK (SISWA MEMILIH JADWAL LANJUTAN ORTUA)
             $guru = $slot->guruBk;
             if ($guru && $guru->no_hp) {
                 $msg = "Jadwal Konseling Lanjutan Pendampingan Ortua Dipilih!\n\n"
@@ -245,7 +244,9 @@ class SiswaController extends Controller
             'tanggal_pengajuan' => Carbon::now(),
         ]);
 
-        // Mengirim notifikasi WhatsApp ke Guru BK
+        // =========================================================================
+        // PENGIRIMAN NOTIFIKASI WHATSAPP KE GURU BK (PENGAJUAN KONSELING MANDIRI SISWA)
+        // =========================================================================
         $guru = $slot->guruBk;
         if ($guru && $guru->no_hp) {
             $msg = "Pengajuan Konseling Baru Masuk!\n\n"

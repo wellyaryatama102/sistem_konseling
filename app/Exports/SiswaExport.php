@@ -9,6 +9,10 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
+/**
+ * FUNGSI FILE INI:
+ * Mengekspor daftar master data siswa beserta relasi kelas dan jurusan ke format file Excel (.xlsx).
+ */
 class SiswaExport implements FromCollection, WithHeadings, WithMapping, WithStyles
 {
     /**

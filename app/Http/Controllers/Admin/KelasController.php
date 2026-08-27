@@ -9,6 +9,10 @@ use App\Models\Jurusan;
 use App\Models\WaliKelas;
 use Illuminate\Http\Request;
 
+/**
+ * FUNGSI FILE INI:
+ * Menangani kelola data kelas/rombel, penunjukan wali kelas, jurusan, dan tahun ajaran.
+ */
 class KelasController extends Controller
 {
     /**

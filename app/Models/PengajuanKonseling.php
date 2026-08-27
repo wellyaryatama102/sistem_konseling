@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam permohonan konseling dari siswa / rujukan wali kelas, alasan pengajuan, dan status validasinya.
+ */
 class PengajuanKonseling extends Model
 {
     use HasFactory;

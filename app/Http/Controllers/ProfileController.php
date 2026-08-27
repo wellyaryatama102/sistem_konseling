@@ -14,6 +14,10 @@ use App\Models\Wakasis;
 use App\Models\Kepsek;
 use App\Models\Siswa;
 
+/**
+ * FUNGSI FILE INI:
+ * Menampilkan dan memperbarui data profil pengguna mandiri serta mengubah kata sandi (password) akun.
+ */
 class ProfileController extends Controller
 {
     /**

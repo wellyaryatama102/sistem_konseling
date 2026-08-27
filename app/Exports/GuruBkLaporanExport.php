@@ -7,6 +7,10 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
+/**
+ * FUNGSI FILE INI:
+ * Merender rekapitulasi data laporan pelayanan Guru BK ke format file Excel (.xlsx).
+ */
 class GuruBkLaporanExport implements FromView, ShouldAutoSize, WithTitle
 {
     protected $data;

@@ -1,3 +1,4 @@
+{{-- VIEW LANDING PAGE: Halaman publik utama berisi profil layanan Bimbingan Konseling SMKN 2 Guguak --}}
 <!DOCTYPE html>
 <html lang="id">
 <head>

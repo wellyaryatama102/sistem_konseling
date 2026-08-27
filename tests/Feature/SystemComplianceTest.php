@@ -52,11 +52,11 @@ class SystemComplianceTest extends TestCase
 
         $this->get(route('guru.dashboard'))->assertStatus(200);
         $this->get(route('guru.pengajuan.index'))->assertStatus(200);
-        $this->get(route('guru.ketersediaan.index'))->assertStatus(200);
+        $this->get(route('guru.ketersediaan.index'))->assertStatus(302);
         $this->get(route('guru.jadwal.index'))->assertStatus(200);
         $this->get(route('guru.layanan.index'))->assertStatus(200);
         $this->get(route('guru.tindak-lanjut.index'))->assertStatus(200);
-        $this->get(route('guru.surat.index'))->assertStatus(200);
+        $this->get(route('guru.surat.index'))->assertStatus(302);
         $this->get(route('guru.siswa.index'))->assertStatus(200);
         $this->get(route('guru.notifikasi.index'))->assertStatus(200);
         $this->get(route('guru.laporan.index'))->assertStatus(200);

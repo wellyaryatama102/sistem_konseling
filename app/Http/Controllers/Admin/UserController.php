@@ -21,6 +21,10 @@ use Illuminate\Validation\Rule;
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
 
+/**
+ * FUNGSI FILE INI:
+ * Menangani kelola data akun pengguna (CRUD User) dari seluruh role serta statistik dashboard Admin.
+ */
 class UserController extends Controller
 {
     //Dashboard Admin

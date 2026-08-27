@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam slot waktu konseling yang disediakan oleh Guru BK (tanggal, jam, dan status slot: tersedia / terisi).
+ */
 class JadwalKetersediaan extends Model
 {
     use HasFactory;

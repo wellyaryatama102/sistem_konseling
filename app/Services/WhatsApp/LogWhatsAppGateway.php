@@ -4,6 +4,10 @@ namespace App\Services\WhatsApp;
 
 use Illuminate\Support\Facades\Log;
 
+/**
+ * FUNGSI FILE INI:
+ * Menulis simulasi pengiriman pesan WhatsApp ke file log (laravel.log) untuk pengujian lokal tanpa API Fonnte.
+ */
 class LogWhatsAppGateway implements WhatsAppGatewayInterface
 {
     public function sendMessage(string $recipientNumber, string $message, array $extraData = []): array

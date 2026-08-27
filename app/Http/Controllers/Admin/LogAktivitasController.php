@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\WaLog;
 use Illuminate\Http\Request;
 
+/**
+ * FUNGSI FILE INI:
+ * Menampilkan catatan log audit pengiriman notifikasi WhatsApp (tabel wa_logs) beserta status pengirimannya.
+ */
 class LogAktivitasController extends Controller
 {
     /**

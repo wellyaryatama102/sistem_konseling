@@ -14,10 +14,12 @@ class WhatsAppNotificationService
     }
 
     /**
-     * Send notification message and store log.
+     * FUNGSI FILE INI:
+     * Service utama pengiriman notifikasi WhatsApp & pencatatan log riwayat ke tabel wa_logs.
      */
     public function send(string $recipientType, string $recipientName, ?string $rawPhone, string $notificationType, string $message, array $extraData = []): WaLog
     {
+        // Cek apakah nomor WhatsApp penerima valid dan terisi
         if (empty($rawPhone) || trim($rawPhone) === '-' || trim($rawPhone) === '') {
             return WaLog::create([
                 'penerima_tipe' => $recipientType,
@@ -30,9 +32,10 @@ class WhatsAppNotificationService
             ]);
         }
 
+        // Format nomor HP menjadi format standar 62xxx
         $formattedPhone = $this->formatPhoneNumber($rawPhone);
 
-        // Record initial log entry
+        // Buat draft log awal berstatus 'pending'
         $log = WaLog::create([
             'penerima_tipe' => $recipientType,
             'penerima_nama' => $recipientName,
@@ -42,8 +45,10 @@ class WhatsAppNotificationService
             'status' => 'pending',
         ]);
 
+        // Eksekusi pengiriman pesan via Gateway API Fonnte WhatsApp
         $result = $this->gateway->sendMessage($formattedPhone, $message, $extraData);
 
+        // Update status log berdasarkan hasil dari API Fonnte
         if ($result['success']) {
             $log->update([
                 'status' => 'sent',

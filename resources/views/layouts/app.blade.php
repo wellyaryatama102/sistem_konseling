@@ -1,3 +1,4 @@
+{{-- LAYOUT UTAMA APLIKASI: Induk kerangka tampilan (Sidebar, Topbar, Content Area) untuk seluruh portal --}}
 <!DOCTYPE html>
 <html lang="id">
 <head>

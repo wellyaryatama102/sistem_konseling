@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam data profil Guru Bimbingan Konseling (NIP, nama, kontak, foto profil) dan jadwal ketersediaannya.
+ */
 class GuruBk extends Model
 {
     use HasFactory;

@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * FUNGSI FILE INI:
+ * Merekam penetapan opsi tindak lanjut konseling oleh Guru BK (selesai, jadwal lanjutan, atau panggilan orang tua).
+ */
 class TindakLanjut extends Model
 {
     use HasFactory;

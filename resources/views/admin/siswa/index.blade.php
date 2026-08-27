@@ -8,6 +8,14 @@
         <h2 style="margin:0; font-size:1.5rem; font-weight:800; color:var(--primary-dark);">Data Master Siswa</h2>
         <p style="color:var(--text-muted); margin:0.25rem 0 0 0; font-size:0.875rem;">Pengelolaan administrasi data pokok siswa SMKN 2 Guguak.</p>
     </div>
+    <div>
+        <a href="{{ route('admin.siswa.create') }}" class="btn btn-primary" style="display:inline-flex; align-items:center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 6px;">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+            + Tambah Siswa Baru
+        </a>
+    </div>
 </div>
 
 <div class="card">
