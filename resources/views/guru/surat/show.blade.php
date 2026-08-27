@@ -54,17 +54,8 @@
     {{-- KOP SEKOLAH & FORMAT SURAT PANGGILAN RESMI --}}
     <div class="card" id="suratPrintArea" style="background:white; padding:2.5rem; border:1px solid #cbd5e1; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);">
         
-        {{-- KOP SEKOLAH --}}
-        <div style="display:flex; align-items:center; gap:1.25rem; border-bottom:3px double #000; padding-bottom:1rem; margin-bottom:1.5rem;">
-            <img src="{{ asset('images/logo_smk.png') }}" alt="Logo SMKN 2 Guguak" style="width:75px; height:75px; object-fit:contain;">
-            <div style="flex:1; text-align:center;">
-                <div style="font-size:1.05rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;">PEMERINTAH PROVINSI SUMATERA BARAT</div>
-                <div style="font-size:1.15rem; font-weight:800; text-transform:uppercase; color:var(--primary-dark);">DINAS PENDIDIKAN - CABANG DINAS WILAYAH IV</div>
-                <div style="font-size:1.35rem; font-weight:900; text-transform:uppercase; color:#0f172a;">SMK NEGERI 2 GUGUAK</div>
-                <div style="font-size:0.8rem; color:#475569; margin-top:0.25rem;">Jl. Raya Ampang Gadang, Kec. Guguak, Kab. Lima Puluh Kota, Sumatera Barat 26253</div>
-            </div>
-            <div style="width:75px;"></div>
-        </div>
+        <!-- PANGGIL KOP SURAT OTOMATIS -->
+        @include('components.kop-surat')
 
         {{-- Nomor & Tanggal Surat --}}
         <div style="display:flex; justify-content:space-between; margin-bottom:1.5rem; font-size:0.9rem;">

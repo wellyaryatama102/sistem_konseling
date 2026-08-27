@@ -11,11 +11,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
+// LIBRARY UNTUK EXCEL 
+use App\Exports\SiswaExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class SiswaController extends Controller
 {
-    /**
-     * Menampilkan daftar data siswa
-     */
+    // Menampilkan daftar data siswa
     public function index(Request $request)
     {
         $query = Siswa::with(['user', 'kelas.jurusan']);
@@ -45,26 +47,21 @@ class SiswaController extends Controller
 
         return view('admin.siswa.index', compact('siswas', 'kelases'));
     }
-    /**
-     * Mengunduh data siswa ke Excel
-     */
+
+    // Mengunduh data siswa ke Excel
     public function export()
     {
         return Excel::download(new SiswaExport, 'Data_Siswa.xlsx');
     }
 
-    /**
-     * Detail data dasar siswa
-     */
+    // Detail data dasar siswa
     public function show(Siswa $siswa)
     {
         $siswa->load(['user', 'kelas.jurusan', 'kelas.waliKelas']);
         return view('admin.siswa.show', compact('siswa'));
     }
 
-    /**
-     * Form edit data dasar siswa
-     */
+    //Form edit data dasar siswa
     public function edit(Siswa $siswa)
     {
         $siswa->load(['user', 'kelas']);
@@ -72,9 +69,7 @@ class SiswaController extends Controller
         return view('admin.siswa.edit', compact('siswa', 'kelases'));
     }
 
-    /**
-     * Update data dasar siswa
-     */
+    // Update data dasar siswa
     public function update(Request $request, Siswa $siswa)
     {
         $validated = $request->validate([
@@ -106,9 +101,7 @@ class SiswaController extends Controller
         return redirect()->route('admin.siswa.index')->with('success', 'Data siswa berhasil diperbarui.');
     }
 
-    /**
-     * Menghapus data siswa dan akun pengguna yang terkait
-     */
+    // Menghapus data siswa dan akun pengguna yang terkait
     public function destroy(Siswa $siswa)
     {
         $nama = $siswa->nama_siswa;

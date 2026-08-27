@@ -16,7 +16,7 @@
         </a>
     </div>
 
-    {{-- Informasi Sesi Konseling (Read-Only) --}}
+    {{-- Informasi Sesi Konseling --}}
     <div class="card" style="margin-bottom:1.5rem; background:#F8FAFC; border:1px solid var(--border-color);">
         <h3 class="card-title" style="color:var(--primary-dark); font-size:1rem; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; margin-bottom:0.75rem;">
             Informasi Sesi Konseling
@@ -155,8 +155,8 @@
                     <label style="border:1px solid var(--border-color); padding:1rem; border-radius:0.5rem; cursor:pointer; background:#FFFFFF; display:flex; gap:0.75rem;">
                         <input type="radio" name="opsi_tindak_lanjut" value="surat_ortu" onchange="toggleLanjutanSlot(this.value)">
                         <div>
-                            <strong style="color:var(--accent-gold); font-size:0.9rem; display:block;">3. Panggilan Orang Tua</strong>
-                            <small style="color:var(--text-muted);">Menerbitkan surat panggilan resmi & kirim notifikasi WhatsApp ke Orang Tua.</small>
+                            <strong style="color:var(--accent-gold); font-size:0.9rem; display:block;">3. Pemanggilan Orang Tua &amp; Konseling Lanjutan</strong>
+                            <small style="color:var(--text-muted);">Menerbitkan surat panggilan resmi Orang Tua &amp; siswa memilih jadwal konseling lanjutan pendampingan Orang Tua.</small>
                         </div>
                     </label>
                 </div>

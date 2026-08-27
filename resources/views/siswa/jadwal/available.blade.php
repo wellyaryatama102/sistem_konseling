@@ -7,10 +7,17 @@
     <p style="color:var(--text-muted); margin:0.25rem 0 0 0; font-size:0.875rem;">Pilih slot ketersediaan waktu yang disediakan Guru BK untuk berkonsultasi.</p>
 </div>
 
+@if(isset($pendingTindakLanjutOrtu) && $pendingTindakLanjutOrtu)
+    <div style="background:#FFFBEB; border:1px solid #FCD34D; border-radius:0.5rem; padding:1rem 1.25rem; margin-bottom:1.25rem; color:#92400E; font-size:0.875rem;">
+        <strong style="color:#B45309; font-size:0.95rem; display:block;">📌 Pemilihan Jadwal Konseling Lanjutan Pendampingan Orang Tua</strong>
+        Anda diminta oleh Guru BK untuk memilih salah satu slot ketersediaan di bawah ini untuk pelaksanaan <strong>Sesi Konseling Lanjutan yang didampingi oleh Orang Tua/Wali</strong>.
+    </div>
+@endif
+
 <div class="card">
     <div class="grid-2">
         @forelse($slots as $slot)
-        <div style="border:1px solid var(--border-color); border-radius:0.5rem; padding:1.25rem; background-color:#FFFFFF; box-shadow:0 1px 3px rgba(0,0,0,0.03);">
+        <div style="border:1px solid {{ isset($pendingTindakLanjutOrtu) && $pendingTindakLanjutOrtu ? '#FCD34D' : 'var(--border-color)' }}; border-radius:0.5rem; padding:1.25rem; background-color:#FFFFFF; box-shadow:0 1px 3px rgba(0,0,0,0.03);">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
                 <span class="badge badge-success">Tersedia</span>
                 <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">Guru BK: {{ $slot->guruBk->nama_lengkap ?? 'Guru BK' }}</span>
@@ -24,20 +31,25 @@
 
             <form action="{{ route('siswa.jadwal.ajukan', $slot->id_jadwal) }}" method="POST">
                 @csrf
+                @if(isset($pendingTindakLanjutOrtu) && $pendingTindakLanjutOrtu)
+                    <input type="hidden" name="tindak_lanjut_id" value="{{ $pendingTindakLanjutOrtu->id_tindak_lanjut }}">
+                @endif
                 <div class="form-group" style="margin-bottom:0.75rem;">
                     <label class="form-label" style="font-size:0.75rem;">Jenis Layanan</label>
                     <select name="jenis_konseling" class="form-control" style="font-size:0.85rem;" required>
-                        <option value="individu">Konseling Individu</option>
+                        <option value="individu" selected>Konseling Individu (Pendampingan Ortu)</option>
                         <option value="kelompok">Konseling Kelompok</option>
                         <option value="insidental">Konseling Insidental</option>
                     </select>
                 </div>
                 <div class="form-group" style="margin-bottom:0.75rem;">
-                    <label class="form-label" style="font-size:0.75rem;">Alasan Pengajuan</label>
-                    <input type="text" name="alasan_pengajuan" class="form-control" placeholder="Tuliskan pokok permasalahan atau topik konsultasi..." required style="font-size:0.85rem;">
+                    <label class="form-label" style="font-size:0.75rem;">Alasan / Pokok Pembahasan</label>
+                    <input type="text" name="alasan_pengajuan" class="form-control"
+                           value="{{ isset($pendingTindakLanjutOrtu) && $pendingTindakLanjutOrtu ? 'Sesi Konseling Lanjutan Pendampingan Orang Tua' : old('alasan_pengajuan') }}"
+                           placeholder="Tuliskan pokok permasalahan atau topik konsultasi..." required style="font-size:0.85rem;">
                 </div>
-                <button type="submit" class="btn btn-primary btn-sm" style="width:100%; justify-content:center;">
-                    Ajukan Jadwal Ini &rarr;
+                <button type="submit" class="btn btn-{{ isset($pendingTindakLanjutOrtu) && $pendingTindakLanjutOrtu ? 'warning' : 'primary' }} btn-sm" style="width:100%; justify-content:center; font-weight:700; color:{{ isset($pendingTindakLanjutOrtu) && $pendingTindakLanjutOrtu ? '#000' : '#FFF' }};">
+                    {{ isset($pendingTindakLanjutOrtu) && $pendingTindakLanjutOrtu ? 'Pilih Slot Konseling Lanjutan Ortua →' : 'Ajukan Jadwal Ini →' }}
                 </button>
             </form>
         </div>

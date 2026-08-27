@@ -24,8 +24,10 @@
                                 data-kelas="{{ $tindakLanjut->sesiKonseling->pengajuan->siswa->kelas->nama_kelas ?? '-' }}"
                                 data-ortu="{{ $tindakLanjut->sesiKonseling->pengajuan->siswa->nama_orang_tua_wali ?: 'Orang Tua / Wali' }}"
                                 data-wa="{{ $tindakLanjut->sesiKonseling->pengajuan->siswa->no_wa_orang_tua_wali ?? '' }}"
+                                data-tgl="{{ $tindakLanjut->jadwal->tanggal_tersedia ?? '' }}"
+                                data-waktu="{{ isset($tindakLanjut->jadwal) ? substr($tindakLanjut->jadwal->jam_mulai, 0, 5) : '' }}"
                                 selected>
-                            {{ $tindakLanjut->sesiKonseling->pengajuan->siswa->nama_siswa ?? '-' }} ({{ $tindakLanjut->sesiKonseling->pengajuan->siswa->kelas->nama_kelas ?? '-' }}) - {{ $tindakLanjut->catatan }}
+                            {{ $tindakLanjut->sesiKonseling->pengajuan->siswa->nama_siswa ?? '-' }} ({{ $tindakLanjut->sesiKonseling->pengajuan->siswa->kelas->nama_kelas ?? '-' }}) - {{ $tindakLanjut->catatan }} {{ $tindakLanjut->jadwal ? '(Jadwal Siswa: ' . \Carbon\Carbon::parse($tindakLanjut->jadwal->tanggal_tersedia)->format('d/m/Y') . ')' : '(Belum Pilih Slot)' }}
                         </option>
                     @endif
                     @foreach($availableTindakLanjuts as $t)
@@ -34,8 +36,10 @@
                                     data-siswa="{{ $t->sesiKonseling->pengajuan->siswa->nama_siswa ?? '-' }}"
                                     data-kelas="{{ $t->sesiKonseling->pengajuan->siswa->kelas->nama_kelas ?? '-' }}"
                                     data-ortu="{{ $t->sesiKonseling->pengajuan->siswa->nama_orang_tua_wali ?: 'Orang Tua / Wali' }}"
-                                    data-wa="{{ $t->sesiKonseling->pengajuan->siswa->no_wa_orang_tua_wali ?? '' }}">
-                                {{ $t->sesiKonseling->pengajuan->siswa->nama_siswa ?? '-' }} ({{ $t->sesiKonseling->pengajuan->siswa->kelas->nama_kelas ?? '-' }}) - {{ $t->catatan }}
+                                    data-wa="{{ $t->sesiKonseling->pengajuan->siswa->no_wa_orang_tua_wali ?? '' }}"
+                                    data-tgl="{{ $t->jadwal->tanggal_tersedia ?? '' }}"
+                                    data-waktu="{{ isset($t->jadwal) ? substr($t->jadwal->jam_mulai, 0, 5) : '' }}">
+                                {{ $t->sesiKonseling->pengajuan->siswa->nama_siswa ?? '-' }} ({{ $t->sesiKonseling->pengajuan->siswa->kelas->nama_kelas ?? '-' }}) - {{ $t->catatan }} {{ $t->jadwal ? '(Jadwal Siswa: ' . \Carbon\Carbon::parse($t->jadwal->tanggal_tersedia)->format('d/m/Y') . ')' : '(Belum Pilih Slot)' }}
                             </option>
                         @endif
                     @endforeach
@@ -52,7 +56,7 @@
                 </div>
             </div>
 
-            {{-- Nomor Surat & Tanggal Terbit --}}
+            {{-- NO Surat & Tanggal Terbit --}}
             <div class="grid-2" style="gap:1rem; grid-template-columns: 1fr 1fr; margin-bottom:1rem;">
                 <div>
                     <label class="form-label">Nomor Surat Resmi</label>
@@ -76,13 +80,13 @@
             <div class="grid-2" style="gap:1rem; grid-template-columns: 1fr 1fr; margin-bottom:1rem;">
                 <div>
                     <label class="form-label">Tanggal Pertemuan di Sekolah</label>
-                    <input type="date" name="tanggal_pertemuan" class="form-control"
-                           value="{{ old('tanggal_pertemuan', date('Y-m-d', strtotime('+2 days'))) }}" required>
+                    <input type="date" name="tanggal_pertemuan" id="input_tanggal_pertemuan" class="form-control"
+                           value="{{ old('tanggal_pertemuan', isset($tindakLanjut->jadwal) ? $tindakLanjut->jadwal->tanggal_tersedia : date('Y-m-d', strtotime('+2 days'))) }}" required>
                 </div>
                 <div>
                     <label class="form-label">Waktu Pertemuan</label>
-                    <input type="time" name="waktu_pertemuan" class="form-control"
-                           value="{{ old('waktu_pertemuan', '09:00') }}" required>
+                    <input type="time" name="waktu_pertemuan" id="input_waktu_pertemuan" class="form-control"
+                           value="{{ old('waktu_pertemuan', isset($tindakLanjut->jadwal) ? substr($tindakLanjut->jadwal->jam_mulai, 0, 5) : '09:00') }}" required>
                 </div>
             </div>
 
@@ -112,11 +116,20 @@ function onTindakSelected(select) {
     const kelas = option.getAttribute('data-kelas') || '-';
     const ortu = option.getAttribute('data-ortu') || '-';
     const wa = option.getAttribute('data-wa') || 'Belum terdaftar';
+    const tgl = option.getAttribute('data-tgl');
+    const waktu = option.getAttribute('data-waktu');
     
     document.getElementById('lblSiswa').textContent = siswa;
     document.getElementById('lblKelas').textContent = kelas;
     document.getElementById('lblNamaOrtu').textContent = ortu;
     document.getElementById('lblWaOrtu').textContent = wa;
+
+    if (tgl) {
+        document.getElementById('input_tanggal_pertemuan').value = tgl;
+    }
+    if (waktu) {
+        document.getElementById('input_waktu_pertemuan').value = waktu;
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {

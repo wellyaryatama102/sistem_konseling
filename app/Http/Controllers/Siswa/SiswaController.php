@@ -42,6 +42,24 @@ class SiswaController extends Controller
     /**
      * 1. BERANDA SISWA
      */
+    /**
+     * Helper to get pending Tindak Lanjut Pemanggilan Orang Tua for current student.
+     */
+    private function getPendingTindakLanjutOrtu(Siswa $siswa)
+    {
+        return \App\Models\TindakLanjut::with(['sesiKonseling.pengajuan.siswa', 'suratPanggilans'])
+            ->where('jenis_aksi', 'surat_ortu')
+            ->where('status_tindak_lanjut', 'belum_ditindaklanjuti')
+            ->whereNull('id_jadwal')
+            ->whereHas('sesiKonseling.pengajuan', function ($q) use ($siswa) {
+                $q->where('id_siswa', $siswa->id_siswa);
+            })
+            ->first();
+    }
+
+    /**
+     * 1. BERANDA SISWA
+     */
     public function dashboard()
     {
         $siswa = $this->getCurrentSiswa();
@@ -68,7 +86,10 @@ class SiswaController extends Controller
             ->take(5)
             ->get();
 
-        return view('siswa.dashboard', compact('siswa', 'stats', 'jadwalTerdekat', 'notifikasis'));
+        // Cek instruksi Tindak Lanjut Pemanggilan Orang Tua & Konseling Lanjutan
+        $pendingTindakLanjutOrtu = $this->getPendingTindakLanjutOrtu($siswa);
+
+        return view('siswa.dashboard', compact('siswa', 'stats', 'jadwalTerdekat', 'notifikasis', 'pendingTindakLanjutOrtu'));
     }
 
     /**
@@ -109,6 +130,7 @@ class SiswaController extends Controller
      */
     public function indexJadwalAvailable()
     {
+        $siswa = $this->getCurrentSiswa();
         $today = Carbon::today()->toDateString();
         $slots = JadwalKetersediaan::with('guruBk')
             ->where('tanggal_tersedia', '>=', $today)
@@ -117,11 +139,13 @@ class SiswaController extends Controller
             ->orderBy('jam_mulai', 'asc')
             ->paginate(12);
 
-        return view('siswa.jadwal.available', compact('slots'));
+        $pendingTindakLanjutOrtu = $this->getPendingTindakLanjutOrtu($siswa);
+
+        return view('siswa.jadwal.available', compact('slots', 'pendingTindakLanjutOrtu'));
     }
 
     /**
-     * 4. AJUKAN KONSELING MANDIRI 
+     * 4. AJUKAN KONSELING MANDIRI / KONSELING LANJUTAN PENDAMPINGAN ORTU
      */
     public function ajukanJadwal(Request $request, JadwalKetersediaan $slot)
     {
@@ -138,9 +162,69 @@ class SiswaController extends Controller
         $validated = $request->validate([
             'jenis_konseling' => 'required|in:individu,kelompok,insidental',
             'alasan_pengajuan' => 'required|string|min:5',
+            'tindak_lanjut_id' => 'nullable|exists:tindak_lanjut,id_tindak_lanjut',
         ]);
 
-        // Cek apakah siswa memiliki pengajuan aktif di masa depan yang belum selesai
+        $pendingTindakLanjutOrtu = null;
+        if ($request->filled('tindak_lanjut_id')) {
+            $pendingTindakLanjutOrtu = \App\Models\TindakLanjut::find($request->tindak_lanjut_id);
+        } else {
+            $pendingTindakLanjutOrtu = $this->getPendingTindakLanjutOrtu($siswa);
+        }
+
+        // Jika ini adalah pengajuan konseling lanjutan pendampingan orang tua
+        if ($pendingTindakLanjutOrtu) {
+            $slot->update(['status_slot' => 'terisi']);
+
+            $pengajuan = PengajuanKonseling::create([
+                'id_siswa' => $siswa->id_siswa,
+                'id_jadwal' => $slot->id_jadwal,
+                'jenis_konseling' => $validated['jenis_konseling'] ?? 'individu',
+                'alasan_pengajuan' => 'Sesi Konseling Lanjutan (Pendampingan Orang Tua): ' . $validated['alasan_pengajuan'],
+                'sumber_pengajuan' => 'guru_bk',
+                'status_pengajuan' => 'disetujui',
+                'tanggal_pengajuan' => Carbon::now(),
+                'catatan_validasi' => 'Sesi konseling lanjutan pendampingan orang tua dijadwalkan oleh siswa.',
+            ]);
+
+            SesiKonseling::create([
+                'id_pengajuan' => $pengajuan->id_pengajuan,
+                'status_sesi' => 'terjadwal',
+                'tanggal_pelaksanaan' => $slot->tanggal_tersedia,
+                'status_kehadiran' => 'menunggu',
+                'catatan_untuk_siswa' => 'Sesi Konseling Lanjutan Pendampingan Orang Tua. Mohon hadir tepat waktu bersama Orang Tua/Wali di ruang BK.',
+            ]);
+
+            $pendingTindakLanjutOrtu->update([
+                'id_jadwal' => $slot->id_jadwal,
+                'status_tindak_lanjut' => 'terjadwal',
+                'catatan' => ($pendingTindakLanjutOrtu->catatan ?? '') . ' | Slot lanjutan terpilih: ' . Carbon::parse($slot->tanggal_tersedia)->format('d-m-Y') . ' (' . substr($slot->jam_mulai, 0, 5) . ' WIB)',
+            ]);
+
+            // Sinkronisasi tanggal & waktu pertemuan jika Surat Panggilan sudah pernah dibuat
+            foreach ($pendingTindakLanjutOrtu->suratPanggilans as $surat) {
+                $surat->update([
+                    'tanggal_pertemuan' => $slot->tanggal_tersedia,
+                    'waktu_pertemuan' => $slot->jam_mulai,
+                ]);
+            }
+
+            // Kirim notifikasi WA ke Guru BK
+            $guru = $slot->guruBk;
+            if ($guru && $guru->no_hp) {
+                $msg = "Jadwal Konseling Lanjutan Pendampingan Ortua Dipilih!\n\n"
+                    . "Siswa: " . $siswa->nama_siswa . " (" . ($siswa->kelas->nama_kelas ?? '-') . ")\n"
+                    . "Telah memilih slot konseling lanjutan pendampingan orang tua:\n"
+                    . "Tanggal: " . Carbon::parse($slot->tanggal_tersedia)->format('d-m-Y') . "\n"
+                    . "Jam: " . substr($slot->jam_mulai, 0, 5) . " WIB\n\n"
+                    . "Jadwal telah otomatis terisi dan terkonfirmasi pada sistem.";
+                $this->waService->send('guru_bk', $guru->nama_lengkap, $guru->no_hp, 'persetujuan', $msg);
+            }
+
+            return redirect()->route('siswa.pengajuan.index')->with('success', 'Jadwal Konseling Lanjutan Pendampingan Orang Tua berhasil ditetapkan untuk tanggal ' . Carbon::parse($slot->tanggal_tersedia)->format('d F Y') . '.');
+        }
+
+        // Cek pengajuan aktif biasa
         $hasActive = PengajuanKonseling::where('id_siswa', $siswa->id_siswa)
             ->whereIn('status_pengajuan', ['menunggu_validasi', 'disetujui'])
             ->whereHas('jadwal', function ($q) {

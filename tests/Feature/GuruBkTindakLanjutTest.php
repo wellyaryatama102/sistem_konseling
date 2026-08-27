@@ -74,4 +74,54 @@ class GuruBkTindakLanjutTest extends TestCase
             'status_tindak_lanjut' => 'selesai',
         ]);
     }
+
+    public function test_parent_accompanied_followup_counseling_flow(): void
+    {
+        $siswaUser = User::where('role', 'siswa')->first();
+        $siswa = $siswaUser->siswa;
+        $siswa->update(['no_wa_orang_tua_wali' => '08123456789']);
+
+        // 1. Guru BK save hasil with opsi surat_ortu
+        $response = $this->actingAs($this->guruBk)->post(route('guru.siswa.simpan-hasil', $this->sesi), [
+            'status_kehadiran' => 'hadir',
+            'hasil_konseling' => 'Siswa perlu bimbingan pendampingan ortu.',
+            'opsi_tindak_lanjut' => 'surat_ortu',
+            'catatan_tindak_lanjut' => 'Panggilan ortu & konseling lanjutan.',
+        ]);
+
+        $tindakLanjut = TindakLanjut::latest('id_tindak_lanjut')->first();
+        $this->assertNotNull($tindakLanjut);
+        $response->assertRedirect(route('guru.surat.create', ['tindak_lanjut_id' => $tindakLanjut->id_tindak_lanjut]));
+        $this->assertEquals('belum_ditindaklanjuti', $tindakLanjut->status_tindak_lanjut);
+
+        // 2. Siswa views dashboard & sees pending parent-accompanied instructions
+        $dashResp = $this->actingAs($siswaUser)->get(route('siswa.dashboard'));
+        $dashResp->assertStatus(200);
+        $dashResp->assertSee('Pemanggilan Orang Tua &amp; Konseling Lanjutan', false);
+
+        // 3. Siswa selects available slot
+        $guruBkModel = \App\Models\GuruBk::first();
+        $slot = \App\Models\JadwalKetersediaan::create([
+            'id_guru_bk' => $guruBkModel->id_guru_bk,
+            'tanggal_tersedia' => Carbon::tomorrow()->toDateString(),
+            'jam_mulai' => '09:00:00',
+            'jam_selesai' => '10:00:00',
+            'status_slot' => 'tersedia',
+        ]);
+
+        $bookResp = $this->actingAs($siswaUser)->post(route('siswa.jadwal.ajukan', $slot), [
+            'jenis_konseling' => 'individu',
+            'alasan_pengajuan' => 'Sesi Konseling Lanjutan Pendampingan Orang Tua',
+            'tindak_lanjut_id' => $tindakLanjut->id_tindak_lanjut,
+        ]);
+
+        $bookResp->assertRedirect(route('siswa.pengajuan.index'));
+
+        // Verify slot is booked & tindak_lanjut updated to terjadwal
+        $slot->refresh();
+        $tindakLanjut->refresh();
+        $this->assertEquals('terisi', $slot->status_slot);
+        $this->assertEquals('terjadwal', $tindakLanjut->status_tindak_lanjut);
+        $this->assertEquals($slot->id_jadwal, $tindakLanjut->id_jadwal);
+    }
 }

@@ -191,23 +191,24 @@
                         @elseif($t->jenis_aksi == 'sesi_lanjutan')
                             <span class="badge badge-info">Sesi Lanjutan</span>
                         @elseif($t->jenis_aksi == 'surat_ortu')
-                            <span class="badge badge-gold">Panggilan Orang Tua</span>
+                            <span class="badge badge-gold">Panggilan Ortua &amp; Konseling Lanjutan</span>
                         @endif
                     </td>
                     <td>
                         @if($t->jadwal)
-                            <small style="color:var(--primary); font-weight:700;">
-                                {{ \Carbon\Carbon::parse($t->jadwal->tanggal_tersedia)->format('d/m/Y') }} ({{ substr($t->jadwal->jam_mulai, 0, 5) }} WIB)
-                            </small>
-                        @elseif($t->suratPanggilans->count() > 0)
-                            <a href="{{ route('guru.surat.show', $t->suratPanggilans->first()->id_surat) }}" style="font-size:0.8rem; color:var(--primary); font-weight:700;">
-                                {{ $t->suratPanggilans->first()->nomor_surat }}
+                            <div style="font-size:0.8rem; color:var(--primary); font-weight:700;">
+                                Slot Lanjutan: {{ \Carbon\Carbon::parse($t->jadwal->tanggal_tersedia)->format('d/m/Y') }} ({{ substr($t->jadwal->jam_mulai, 0, 5) }} WIB)
+                            </div>
+                        @endif
+                        @if($t->suratPanggilans->count() > 0)
+                            <a href="{{ route('guru.surat.show', $t->suratPanggilans->first()->id_surat) }}" style="font-size:0.8rem; color:var(--primary); font-weight:700; display:block;">
+                                Surat: {{ $t->suratPanggilans->first()->nomor_surat }}
                             </a>
                         @elseif($t->jenis_aksi == 'surat_ortu')
-                            <a href="{{ route('guru.surat.create', ['tindak_lanjut_id' => $t->id_tindak_lanjut]) }}" class="btn btn-warning btn-sm" style="color:#000;">
+                            <a href="{{ route('guru.surat.create', ['tindak_lanjut_id' => $t->id_tindak_lanjut]) }}" class="btn btn-warning btn-sm" style="color:#000; margin-top:0.2rem;">
                                 + Terbitkan Surat
                             </a>
-                        @else
+                        @elseif(!$t->jadwal)
                             <small style="color:var(--text-muted);">-</small>
                         @endif
                     </td>

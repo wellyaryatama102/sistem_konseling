@@ -5,7 +5,6 @@
     <title>Laporan Rekapitulasi Sistem - Administrator SMKN 2 Guguak</title>
     <style>
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 8.5pt; line-height: 1.4; color: #111; margin: 10px 15px; }
-        .header { text-align: center; border-bottom: 2.5px double #000; padding-bottom: 6px; margin-bottom: 10px; }
         .title { text-align: center; font-weight: bold; font-size: 11pt; margin: 8px 0 3px 0; text-transform: uppercase; }
         .subtitle { text-align: center; font-size: 8pt; color: #444; margin-bottom: 10px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 8pt; }
@@ -17,27 +16,8 @@
 </head>
 <body>
 
-    @php
-        $logoPath = public_path('images/logo_smk.png');
-        $logoBase64 = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : '';
-    @endphp
-
-    <table style="width: 100%; border-collapse: collapse; border: none; border-bottom: 2.5px double #000; padding-bottom: 6px; margin-bottom: 10px;">
-        <tr>
-            <td style="width: 60px; border: none; text-align: center; vertical-align: middle;">
-                @if($logoBase64)
-                    <img src="data:image/png;base64,{{ $logoBase64 }}" style="width: 55px; height: 55px;">
-                @endif
-            </td>
-            <td style="border: none; text-align: center; vertical-align: middle;">
-                <h4 style="margin: 0; font-size: 9pt; font-weight: bold; text-transform: uppercase;">PEMERINTAH PROVINSI SUMATERA BARAT</h4>
-                <h3 style="margin: 0; font-size: 10.5pt; font-weight: bold; text-transform: uppercase;">DINAS PENDIDIKAN - CABANG DINAS WILAYAH IV</h3>
-                <h2 style="margin: 0; font-size: 13pt; font-weight: 800; text-transform: uppercase;">SMK NEGERI 2 GUGUAK</h2>
-                <p style="margin: 2px 0 0 0; font-size: 7.5pt; color: #333;">Jl. Raya Ampang Gadang, Kec. Guguak, Kab. Lima Puluh Kota, Sumatera Barat 26253</p>
-            </td>
-            <td style="width: 60px; border: none;"></td>
-        </tr>
-    </table>
+    <!-- PANGGIL KOP SURAT OTOMATIS -->
+    @include('components.kop-surat')
 
     <div class="title">
         @if(($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas')

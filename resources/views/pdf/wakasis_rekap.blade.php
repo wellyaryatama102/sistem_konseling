@@ -36,7 +36,7 @@
             </td>
             <td style="border: none; text-align: center; vertical-align: middle;">
                 <h4 style="margin: 0; font-size: 9.5pt; font-weight: bold; text-transform: uppercase;">PEMERINTAH PROVINSI SUMATERA BARAT</h4>
-                <h3 style="margin: 0; font-size: 11pt; font-weight: bold; text-transform: uppercase;">DINAS PENDIDIKAN - CABANG DINAS WILAYAH IV</h3>
+                <h3 style="margin: 0; font-size: 11pt; font-weight: bold; text-transform: uppercase;">DINAS PENDIDIKAN</h3>
                 <h2 style="margin: 0; font-size: 13.5pt; font-weight: 800; text-transform: uppercase;">SMK NEGERI 2 GUGUAK</h2>
                 <p style="margin: 2px 0 0 0; font-size: 8pt; color: #333;">Jl. Raya Ampang Gadang, Kec. Guguak, Kab. Lima Puluh Kota, Sumatera Barat 26253</p>
             </td>

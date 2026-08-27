@@ -433,17 +433,43 @@ class GuruBkController extends Controller
                 }
             }
         } elseif ($opsi === 'surat_ortu') {
-            // Menerbitkan tindak lanjut surat orang tua
+            // Menerbitkan tindak lanjut surat orang tua & konseling lanjutan pendampingan ortua
             $tindakLanjut = TindakLanjut::create([
                 'id_sesi' => $konseling->id_sesi,
                 'id_jadwal' => null,
                 'jenis_aksi' => 'surat_ortu',
                 'status_tindak_lanjut' => 'belum_ditindaklanjuti',
-                'catatan' => $validated['catatan_tindak_lanjut'] ?? 'Perlu penerbitan surat panggilan orang tua/wali.',
+                'catatan' => $validated['catatan_tindak_lanjut'] ?? 'Pemanggilan Orang Tua & Konseling Lanjutan Pendampingan Orang Tua.',
             ]);
 
+            // Mengirim Notifikasi Sistem & WA ke Siswa untuk memilih jadwal konseling lanjutan bersama Orang Tua
+            $siswa = $konseling->pengajuan->siswa ?? null;
+            if ($siswa) {
+                if ($siswa->no_wa_siswa) {
+                    $msg = "INSTUKSI KONSELING LANJUTAN PENDAMPINGAN ORANG TUA!\n\n"
+                        . "Halo " . $siswa->nama_siswa . ",\n"
+                        . "Guru BK telah menetapkan tindak lanjut Pemanggilan Orang Tua & Konseling Lanjutan.\n"
+                        . "Silakan login ke aplikasi SIKS untuk memilih slot jadwal konseling lanjutan yang didampingi oleh Orang Tua/Wali Anda.\n\n"
+                        . "Catatan BK: " . ($validated['catatan_tindak_lanjut'] ?? 'Perlu konseling lanjutan pendampingan orang tua.');
+                    $this->waService->send('siswa', $siswa->nama_siswa, $siswa->no_wa_siswa, 'persetujuan', $msg);
+                }
+
+                if ($siswa->user_id) {
+                    Notifikasi::create([
+                        'user_id' => $siswa->user_id,
+                        'judul_notifikasi' => 'Pilih Jadwal Konseling Lanjutan Pendampingan Orang Tua',
+                        'jenis_notifikasi' => 'surat_panggilan',
+                        'id_pengajuan' => $konseling->id_pengajuan,
+                        'tipe_penerima' => 'siswa',
+                        'isi_pesan' => 'Guru BK menetapkan Pemanggilan Orang Tua. Silakan pilih slot jadwal konseling lanjutan pendampingan orang tua Anda.',
+                        'status_kirim' => 'sent',
+                        'tanggal_kirim' => Carbon::now(),
+                    ]);
+                }
+            }
+
             return redirect()->route('guru.surat.create', ['tindak_lanjut_id' => $tindakLanjut->id_tindak_lanjut])
-                ->with('success', 'Catatan hasil konseling berhasil disimpan. Silakan lengkapi formulir Surat Panggilan Orang Tua.');
+                ->with('success', 'Catatan hasil konseling berhasil disimpan. Siswa telah dinotifikasi untuk memilih jadwal konseling lanjutan pendampingan orang tua.');
         }
 
         return redirect()->route('guru.layanan.index')->with('success', 'Hasil konseling dan tindak lanjut berhasil disimpan.');
@@ -531,7 +557,7 @@ class GuruBkController extends Controller
     }
 
     /**
-     * 7. TINDAK LANJUT & SURAT PANGGILAN TERPADU
+     * 7. TINDAK LANJUT & SURAT PANGGILAN
      */
     public function indexTindakLanjut(Request $request)
     {
@@ -611,11 +637,16 @@ class GuruBkController extends Controller
             ->whereDoesntHave('suratPanggilans')
             ->get();
 
-        // Generate Nomor Surat Otomatis
+        // Generate Nomor Surat Otomatis dengan format: 422/[nomor_urut]/SMK.N 2-GG/[romawi]/[tahun]
         $romawiBulan = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
         $bulanIdx = Carbon::now()->month - 1;
-        $count = SuratPanggilan::whereYear('tanggal_terbit', Carbon::now()->year)->count() + 1;
-        $nomorOtomatis = sprintf("421.5/BK-SMKN2/%d/%s/%03d", Carbon::now()->year, $romawiBulan[$bulanIdx], $count);
+        $tahun = Carbon::now()->year;
+        
+        // Menghitung jumlah surat di tahun ini untuk menentukan nomor urut berikutnya (001, 002, dst)
+        $count = SuratPanggilan::whereYear('tanggal_terbit', $tahun)->count() + 1;
+        
+        // Format string otomatis
+        $nomorOtomatis = sprintf("422/%03d/SMK.N 2-GG/%s/%d", $count, $romawiBulan[$bulanIdx], $tahun);
 
         return view('guru.surat.create', compact('guru', 'tindakLanjut', 'availableTindakLanjuts', 'nomorOtomatis'));
     }

@@ -27,6 +27,22 @@
     </div>
 </div>
 
+@if(isset($pendingTindakLanjutOrtu) && $pendingTindakLanjutOrtu)
+    <div style="background:#FFFBEB; border:1px solid #FCD34D; border-radius:0.5rem; padding:1.25rem; margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+        <div>
+            <div style="font-weight:800; color:#B45309; font-size:1.05rem;">
+                Instruksi Guru BK: Pemanggilan Orang Tua &amp; Konseling Lanjutan
+            </div>
+            <div style="font-size:0.875rem; color:#92400E; margin-top:0.25rem;">
+                Guru BK telah menetapkan tindak lanjut Pemanggilan Orang Tua. Anda diminta memilih kembali slot jadwal <strong>Konseling Lanjutan Pendampingan Orang Tua</strong>.
+            </div>
+        </div>
+        <a href="{{ route('siswa.jadwal.available', ['tindak_lanjut_id' => $pendingTindakLanjutOrtu->id_tindak_lanjut]) }}" class="btn btn-warning" style="font-weight:700; color:#000;">
+            Pilih Jadwal Konseling Lanjutan &rarr;
+        </a>
+    </div>
+@endif
+
 <div class="grid-2" style="margin-top:1.5rem; gap:1.5rem; align-items:start;">
     {{-- Jadwal Terdekat --}}
     <div class="card">

@@ -31,7 +31,7 @@ class TindakLanjut extends Model
         return $this->sesiKonseling();
     }
 
-    // Relasi ke Jadwal Ketersediaan (untuk sesi lanjutan)
+    // Relasi ke Jadwal Ketersediaan untuk sesi lanjutan
     public function jadwal()
     {
         return $this->belongsTo(JadwalKetersediaan::class, 'id_jadwal', 'id_jadwal');

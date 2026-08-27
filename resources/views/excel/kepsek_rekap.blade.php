@@ -1,25 +1,10 @@
-<table>
-    {{-- KOP SURAT RESMI SEKOLAH --}}
-    <tr>
-        <td colspan="7" style="text-align: center; font-weight: bold; font-size: 13pt;">PEMERINTAH PROVINSI SUMATERA BARAT</td>
-    </tr>
-    <tr>
-        <td colspan="7" style="text-align: center; font-weight: bold; font-size: 14pt;">DINAS PENDIDIKAN - CABANG DINAS WILAYAH IV</td>
-    </tr>
-    <tr>
-        <td colspan="7" style="text-align: center; font-weight: bold; font-size: 16pt;">SMK NEGERI 2 GUGUAK</td>
-    </tr>
-    <tr>
-        <td colspan="7" style="text-align: center; font-size: 9pt; font-style: italic;">Jl. Raya Ampang Gadang, Kec. Guguak, Kab. Lima Puluh Kota, Sumatera Barat 26253</td>
-    </tr>
-    <tr>
-        <td colspan="7" style="border-bottom: 2px solid #000000;"></td>
-    </tr>
-    <tr><td colspan="7"></td></tr>
+<!-- PANGGIL KOP SURAT OTOMATIS -->
+@include('components.kop-surat')
 
+<table style="width: 100%; border-collapse: collapse;">
     {{-- JUDUL LAPORAN --}}
     <tr>
-        <td colspan="7" style="text-align: center; font-weight: bold; font-size: 13pt;">
+        <td colspan="7" style="text-align: center; font-weight: bold; font-size: 13pt; border: none;">
             @if($tipeRekap == 'kinerja_guru_bk')
                 LAPORAN EKSEKUTIF EVALUASI KINERJA GURU BIMBINGAN KONSELING
             @elseif($tipeRekap == 'pemetaan_bidang')
@@ -30,11 +15,11 @@
         </td>
     </tr>
     <tr>
-        <td colspan="7" style="text-align: center; font-size: 10pt;">
+        <td colspan="7" style="text-align: center; font-size: 10pt; border: none;">
             Tahun Ajaran: {{ $tahunAjaranAktif->nama_tahun_ajaran ?? '2026/2027' }} | Tanggal Cetak: {{ date('d/m/Y H:i') }} WIB
         </td>
     </tr>
-    <tr><td colspan="7"></td></tr>
+    <tr><td colspan="7" style="border: none; height: 10px;"></td></tr>
 
     {{-- KONTEN TABEL BERDASARKAN TIPE REKAP --}}
     @if($tipeRekap == 'kinerja_guru_bk')
@@ -111,11 +96,10 @@
     @endif
 
     {{-- LEMBAR TANDA TANGAN / PENGESAHAN --}}
-    <tr><td colspan="7"></td></tr>
-    <tr><td colspan="7"></td></tr>
+    <tr><td colspan="7" style="border: none; height: 20px;"></td></tr>
     <tr>
-        <td colspan="4"></td>
-        <td colspan="3" style="text-align: center;">
+        <td colspan="4" style="border: none;"></td>
+        <td colspan="3" style="text-align: center; border: none;">
             Guguak, {{ date('d F Y') }}<br>
             Kepala SMK Negeri 2 Guguak<br><br><br><br><br>
             <strong>{{ $kepsek->nama_lengkap ?? auth()->user()->name }}</strong><br>

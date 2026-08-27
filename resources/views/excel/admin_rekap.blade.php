@@ -4,7 +4,7 @@
         <td colspan="{{ ($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas' ? 9 : 15 }}" style="text-align: center; font-weight: bold; font-size: 13pt;">PEMERINTAH PROVINSI SUMATERA BARAT</td>
     </tr>
     <tr>
-        <td colspan="{{ ($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas' ? 9 : 15 }}" style="text-align: center; font-weight: bold; font-size: 14pt;">DINAS PENDIDIKAN - CABANG DINAS WILAYAH IV</td>
+        <td colspan="{{ ($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas' ? 9 : 15 }}" style="text-align: center; font-weight: bold; font-size: 14pt;">DINAS PENDIDIKAN</td>
     </tr>
     <tr>
         <td colspan="{{ ($tipeRekap ?? 'layanan_konseling') == 'siswa_kelas' ? 9 : 15 }}" style="text-align: center; font-weight: bold; font-size: 16pt;">SMK NEGERI 2 GUGUAK</td>
