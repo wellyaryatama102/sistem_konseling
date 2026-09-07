@@ -58,16 +58,15 @@ class UserSiswaImport implements ToCollection, WithStartRow
             }
 
             if (empty($username)) {
-                $username = 'siswa_' . Str::slug($namaLengkap, '_') . '_' . rand(100, 999);
+                $username = $this->generateUsernameFromName($namaLengkap);
             }
 
-            // Cek Keunikan Username
+            // Cek Keunikan Username jika diinputkan manual
             if (User::where('username', $username)->exists()) {
-                $this->errors[] = "Baris #{$rowNum} ({$namaLengkap}): Username '{$username}' sudah digunakan.";
-                continue;
+                $username = $this->generateUsernameFromName($namaLengkap);
             }
 
-            // Email & Password
+            // Email & Password (Password otomatis disamakan dengan Username jika kosong)
             $email = !empty($customEmail) ? $customEmail : $username . '@siswa.smkn2guguak.sch.id';
             
             if (User::where('email', $email)->exists()) {
@@ -128,5 +127,39 @@ class UserSiswaImport implements ToCollection, WithStartRow
     public function getErrors(): array
     {
         return $this->errors;
+    }
+
+    /**
+     * Generate username berdasarkan nama lengkap siswa.
+     * Aturan: Nama Kata Pertama + Awalan (Huruf Pertama) Kata Kedua.
+     * Contoh: "Welly Aryatama" -> "wellya"
+     * Contoh: "Ahmad Fauzi" -> "ahmadf"
+     * Contoh: "Budi" -> "budi"
+     */
+    protected function generateUsernameFromName(string $fullName): string
+    {
+        $cleaned = trim(preg_replace('/[^a-zA-Z0-9\s]/', '', $fullName));
+        $words = array_values(array_filter(explode(' ', $cleaned)));
+
+        if (empty($words)) {
+            $baseUsername = 'siswa' . rand(100, 999);
+        } elseif (count($words) === 1) {
+            $baseUsername = strtolower($words[0]);
+        } else {
+            // Kata pertama + huruf pertama dari kata kedua
+            $firstWord = strtolower($words[0]);
+            $secondWordFirstLetter = strtolower(substr($words[1], 0, 1));
+            $baseUsername = $firstWord . $secondWordFirstLetter;
+        }
+
+        // Pastikan unik di tabel Users dan Siswa
+        $finalUsername = $baseUsername;
+        $counter = 1;
+        while (User::where('username', $finalUsername)->exists() || Siswa::where('username', $finalUsername)->exists()) {
+            $finalUsername = $baseUsername . $counter;
+            $counter++;
+        }
+
+        return $finalUsername;
     }
 }

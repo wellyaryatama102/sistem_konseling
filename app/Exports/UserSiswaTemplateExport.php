@@ -9,8 +9,7 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 /**
- * FUNGSI FILE INI:
- * Menghasilkan file template Excel (.xlsx) untuk impor masal akun pengguna siswa di Manajemen Pengguna.
+ * Menghasilkan file template Excel (.xlsx) untuk akun pengguna siswa.
  */
 class UserSiswaTemplateExport implements FromArray, WithHeadings, WithStyles, WithColumnWidths
 {
@@ -18,17 +17,17 @@ class UserSiswaTemplateExport implements FromArray, WithHeadings, WithStyles, Wi
     {
         return [
             [
-                'Ahmad Fauzi',
-                '21001',
-                'ahmad21001@siswa.smkn2guguak.sch.id',
-                '21001',
+                'Welly Aryatama',
+                'wellya',
+                'wellya@siswa.smkn2guguak.sch.id',
+                'wellya',
                 'X PPLG 1',
             ],
             [
-                'Siti Aminah',
-                '21002',
-                'siti21002@siswa.smkn2guguak.sch.id',
-                '21002',
+                'Ahmad Fauzi',
+                'ahmadf',
+                'ahmadf@siswa.smkn2guguak.sch.id',
+                'ahmadf',
                 'X PPLG 1',
             ],
         ];
