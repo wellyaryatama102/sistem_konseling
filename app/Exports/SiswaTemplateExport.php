@@ -8,9 +8,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-/**
- * FUNGSI FILE INI:
- * Menghasilkan file template Excel (.xlsx) untuk impor data siswa masal per kelas.
+/**FUNGSI FILE INI: file template Excel (.xlsx) untuk impor data siswa per kelas.
  */
 class SiswaTemplateExport implements FromArray, WithHeadings, WithStyles, WithColumnWidths
 {

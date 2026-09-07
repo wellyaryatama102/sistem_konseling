@@ -133,7 +133,6 @@
         </table>
     </div>
 
-    {{-- Pagination --}}
     <div style="margin-top:1.25rem;">
         {{ $siswas->links() }}
     </div>

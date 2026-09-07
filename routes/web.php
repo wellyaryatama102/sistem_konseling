@@ -17,7 +17,6 @@ use App\Http\Controllers\WaliKelas\WaliKelasController;
 use App\Http\Controllers\Wakasis\WakasisController;
 use App\Http\Controllers\KepalaSekolah\KepalaSekolahController;
 
-// Auth & Public Landing Routes (Murni menampilkan Landing Page tanpa redirect otomatis yang bikin error)
 Route::get('/', function () {
     return view('landing');
 })->name('landing');

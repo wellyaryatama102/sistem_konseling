@@ -10,23 +10,18 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 /**
- * FUNGSI FILE INI:
- * Mengekspor daftar master data siswa beserta relasi kelas dan jurusan ke format file Excel (.xlsx).
+ * FUNGSI FILE INI: Mengekspor daftar master data siswa ke format file Excel
  */
 class SiswaExport implements FromCollection, WithHeadings, WithMapping, WithStyles
 {
     /**
-     * Mengambil data siswa (beserta data kelas & jurusan agar lebih cepat)
+     * Mengambil data siswa (beserta data kelas & jurusan)
      */
     public function collection()
-    {
-        // Menggunakan with() agar relasi kelas dan jurusan ikut dipanggil
+    { // <-- KURUNG KURAWAL BUKA INI SEBELUMNYA HILANG (Penyebab Fatal Error)
         return Siswa::with('kelas.jurusan')->get();
     }
 
-    /**
-     * Memetakan kolom Excel
-     */
     public function map($siswa): array
     {
         return [
@@ -34,10 +29,11 @@ class SiswaExport implements FromCollection, WithHeadings, WithMapping, WithStyl
             $siswa->nisn ?? '-',
             $siswa->nama_siswa,
             $siswa->kelas->nama_kelas ?? 'Belum ditentukan',
-            $siswa->kelas->jurusan->nama_jurusan ?? '-',
+            // Diperbaiki dengan optional chaining (?->) agar tidak error jika kelas null
+            $siswa->kelas?->jurusan?->nama_jurusan ?? '-', 
             $siswa->jenis_kelamin == 'L' ? 'Laki-laki' : ($siswa->jenis_kelamin == 'P' ? 'Perempuan' : '-'),
             $siswa->no_wa_orang_tua_wali ?? '-',
-            ucfirst($siswa->status_siswa), // Mengubah awalan jadi huruf besar
+            ucfirst($siswa->status_siswa ?? '-'), 
         ];
     }
 
@@ -58,9 +54,6 @@ class SiswaExport implements FromCollection, WithHeadings, WithMapping, WithStyl
         ];
     }
 
-    /**
-     * Opsional: Menebalkan huruf di baris Header (Baris 1)
-     */
     public function styles(Worksheet $sheet)
     {
         return [

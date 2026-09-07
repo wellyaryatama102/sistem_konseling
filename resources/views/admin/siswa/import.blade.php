@@ -59,7 +59,7 @@
                     </label>
                     <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.9rem;">
                         <input type="radio" name="password_option" value="custom" onclick="toggleCustomPasswordInput(true)">
-                        <span>Set Password Seragam Sama Semua</span>
+                        <span>Set Password Sama Semua</span>
                     </label>
                 </div>
             </div>
