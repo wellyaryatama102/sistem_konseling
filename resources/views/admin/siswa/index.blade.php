@@ -8,25 +8,12 @@
         <h2 style="margin:0; font-size:1.5rem; font-weight:800; color:var(--primary-dark);">Data Master Siswa</h2>
         <p style="color:var(--text-muted); margin:0.25rem 0 0 0; font-size:0.875rem;">Pengelolaan administrasi data pokok siswa SMKN 2 Guguak.</p>
     </div>
-    <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-        <a href="{{ route('admin.siswa.import') }}" class="btn btn-success" style="display:inline-flex; align-items:center;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 6px;">
-                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-                <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
-            </svg>
-            Import Excel
-        </a>
-        <a href="{{ route('admin.siswa.bulk') }}" class="btn btn-secondary" style="display:inline-flex; align-items:center;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 6px;">
-                <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A4.001 4.001 0 0 1 11 11c2.24 0 3.743.916 4.316 2H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2ZM3.5 0a.5.5 0 0 1 .5.5V1h1a.5.5 0 0 1 0 1H4v1a.5.5 0 0 1-1 0V2H2a.5.5 0 0 1 0-1h1V.5a.5.5 0 0 1 .5-.5ZM1 5.5a.5.5 0 0 1 .5-.5h1V4a.5.5 0 0 1 1 0v1h1a.5.5 0 0 1 0 1H4v1a.5.5 0 0 1-1 0V7H2a.5.5 0 0 1-.5-.5Z"/>
-            </svg>
-            Input Masal Kelas
-        </a>
+    <div>
         <a href="{{ route('admin.siswa.create') }}" class="btn btn-primary" style="display:inline-flex; align-items:center;">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 6px;">
                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
             </svg>
-            + Siswa Tunggal
+            Tambah Siswa Baru
         </a>
     </div>
 </div>

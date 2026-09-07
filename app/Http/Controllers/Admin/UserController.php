@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\{User, Siswa, Admin, GuruBk, WaliKelas, Wakasis, Kepsek, Kelas, Jurusan, TahunAjaran, WaLog};
 use App\Exports\UsersExport;
+use App\Exports\UserSiswaTemplateExport;
+use App\Imports\UserSiswaImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -34,7 +36,6 @@ class UserController extends Controller
             'kepala_sekolah'     => Kepsek::count(),
             'tahun_ajaran_aktif' => $tahunAjaranAktif?->nama_tahun_ajaran ?? '-',
         ];
-
         $recentUsers = User::latest()->take(6)->get();
         $recentLogs  = WaLog::latest()->take(6)->get();
 
@@ -167,5 +168,58 @@ class UserController extends Controller
         $user->update(['password' => Hash::make($request->new_password)]);
 
         return back()->with('success', 'Kata sandi pengguna berhasil direset.');
+    }
+
+    // Unduh Template Excel Impor Akun Siswa
+    public function downloadSiswaTemplate()
+    {
+        return Excel::download(new UserSiswaTemplateExport, 'Template_Import_Akun_Siswa.xlsx');
+    }
+
+    // Form Unggah Import Akun Siswa Masal
+    public function importSiswaForm()
+    {
+        $kelases = Kelas::orderBy('nama_kelas')->get();
+        return view('admin.users.import_siswa', compact('kelases'));
+    }
+
+    // Memproses Impor Akun Siswa dari File Excel
+    public function importSiswaStore(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|file|mimes:xlsx,xls,csv|max:10240',
+            'id_kelas' => 'nullable|exists:kelas,id_kelas',
+            'password_option' => 'required|in:username,custom',
+            'custom_password' => 'nullable|required_if:password_option,custom|string|min:6',
+        ], [
+            'file_excel.required' => 'File Excel wajib diunggah.',
+            'file_excel.mimes' => 'Format file harus berupa Excel (.xlsx, .xls) atau CSV (.csv).',
+            'custom_password.required_if' => 'Password kustom wajib diisi jika Anda memilih opsi password kustom.',
+        ]);
+
+        $defaultPasswordSetting = $request->password_option === 'custom' ? $request->custom_password : 'username';
+        $idKelas = $request->filled('id_kelas') ? (int) $request->id_kelas : null;
+
+        $import = new UserSiswaImport($idKelas, $defaultPasswordSetting);
+
+        try {
+            Excel::import($import, $request->file('file_excel'));
+            $count = $import->getImportedCount();
+            $errors = $import->getErrors();
+
+            if ($count === 0 && !empty($errors)) {
+                return redirect()->back()->withInput()->with('error', 'Gagal mengimpor akun siswa: ' . implode(' | ', $errors));
+            }
+
+            $message = "Berhasil mendaftarkan {$count} akun siswa secara masal ke Manajemen Pengguna.";
+            if (!empty($errors)) {
+                $message .= " Namun beberapa baris dilewati: " . implode(' | ', $errors);
+                return redirect()->route('admin.users.index')->with('warning', $message);
+            }
+
+            return redirect()->route('admin.users.index')->with('success', $message);
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat memproses file: ' . $e->getMessage());
+        }
     }
 }

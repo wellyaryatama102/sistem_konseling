@@ -25,14 +25,14 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// Unified Profile Routes
+// Profile
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 });
 
-// 1. ADMIN ROUTES 
+// 1. ADMIN 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
 
@@ -45,14 +45,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
     Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
     Route::get('/users/export', [UserController::class, 'export'])->name('users.export');
+    Route::get('/users/import-siswa', [UserController::class, 'importSiswaForm'])->name('users.import-siswa');
+    Route::post('/users/import-siswa', [UserController::class, 'importSiswaStore'])->name('users.import-siswa.store');
+    Route::get('/users/import-siswa/template', [UserController::class, 'downloadSiswaTemplate'])->name('users.import-siswa.template');
     
     // Data Siswa 
     Route::get('/siswa/export', [AdminSiswaController::class, 'export'])->name('siswa.export');
-    Route::get('/siswa/import/template', [AdminSiswaController::class, 'downloadTemplate'])->name('siswa.template');
-    Route::get('/siswa/import', [AdminSiswaController::class, 'importForm'])->name('siswa.import');
-    Route::post('/siswa/import', [AdminSiswaController::class, 'importStore'])->name('siswa.import.store');
-    Route::get('/siswa/bulk', [AdminSiswaController::class, 'bulkForm'])->name('siswa.bulk');
-    Route::post('/siswa/bulk', [AdminSiswaController::class, 'bulkStore'])->name('siswa.bulk.store');
     Route::resource('siswa', AdminSiswaController::class);
     
     // Manajemen Kelas & Jurusan
@@ -79,7 +77,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/pengaturan/test-wa', [AdminPengaturanController::class, 'testSend'])->name('pengaturan.test-wa');
 });
 
-// 2. GURU BK ROUTES 
+// 2. GURU BK 
 Route::middleware(['auth', 'role:guru_bk'])->prefix('guru-bk')->name('guru.')->group(function () {
     Route::get('/dashboard', [GuruBkController::class, 'dashboard'])->name('dashboard');
     Route::get('/pengajuan', [GuruBkController::class, 'indexPengajuan'])->name('pengajuan.index');
@@ -111,7 +109,7 @@ Route::middleware(['auth', 'role:guru_bk'])->prefix('guru-bk')->name('guru.')->g
     Route::get('/kelas', [GuruBkController::class, 'indexKelas'])->name('kelas.index');
 });
 
-// 3. SISWA ROUTES 
+// 3. SISWA
 Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->group(function () {
     Route::get('/dashboard', [SiswaController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [SiswaController::class, 'editProfile'])->name('profile.edit');
@@ -123,7 +121,7 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
     Route::get('/hasil-konseling-saya', [SiswaController::class, 'indexHasilKonseling'])->name('konseling.index');
 });
 
-// 4. WALI KELAS ROUTES 
+// 4. WALI KELAS
 Route::middleware(['auth', 'role:wali_kelas'])->prefix('wali-kelas')->name('wali.')->group(function () {
     Route::get('/dashboard', [WaliKelasController::class, 'dashboard'])->name('dashboard');
     Route::get('/siswa', [WaliKelasController::class, 'indexSiswa'])->name('siswa.index');
@@ -136,7 +134,7 @@ Route::middleware(['auth', 'role:wali_kelas'])->prefix('wali-kelas')->name('wali
     Route::get('/jadwal', [WaliKelasController::class, 'indexJadwal'])->name('jadwal.index');
 });
 
-// 5. WAKASIS ROUTES 
+// 5. WAKASIS 
 Route::middleware(['auth', 'role:wakasis'])->prefix('wakasis')->name('wakasis.')->group(function () {
     Route::get('/dashboard', [WakasisController::class, 'dashboard'])->name('dashboard');
     Route::get('/siswa', [WakasisController::class, 'indexSiswa'])->name('siswa.index');
