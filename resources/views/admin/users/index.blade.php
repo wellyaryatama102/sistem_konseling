@@ -49,7 +49,7 @@
 
     {{-- Tabel Pengguna --}}
     <div class="table-responsive">
-        <table>
+        <table class="table">
             <thead>
                 <tr>
                     <th>Nama Pengguna</th>
@@ -108,7 +108,7 @@
 
     {{-- Pagination --}}
     <div style="margin-top:1.25rem;">
-        {{ $users->links() }}
+        {{ $users->links('pagination::simple-bootstrap-5') }}
     </div>
 </div>
 @endsection

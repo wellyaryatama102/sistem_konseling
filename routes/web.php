@@ -49,6 +49,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     
     // Data Siswa 
     Route::get('/siswa/export', [AdminSiswaController::class, 'export'])->name('siswa.export');
+    Route::get('/siswa/import/template', [AdminSiswaController::class, 'downloadTemplate'])->name('siswa.template');
+    Route::get('/siswa/import', [AdminSiswaController::class, 'importForm'])->name('siswa.import');
+    Route::post('/siswa/import', [AdminSiswaController::class, 'importStore'])->name('siswa.import.store');
+    Route::get('/siswa/bulk', [AdminSiswaController::class, 'bulkForm'])->name('siswa.bulk');
+    Route::post('/siswa/bulk', [AdminSiswaController::class, 'bulkStore'])->name('siswa.bulk.store');
     Route::resource('siswa', AdminSiswaController::class);
     
     // Manajemen Kelas & Jurusan

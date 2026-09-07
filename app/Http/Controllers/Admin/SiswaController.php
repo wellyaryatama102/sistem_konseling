@@ -13,11 +13,15 @@ use Illuminate\Validation\Rule;
 
 // LIBRARY UNTUK EXCEL 
 use App\Exports\SiswaExport;
+use App\Exports\SiswaTemplateExport;
+use App\Imports\SiswaImport;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * FUNGSI FILE INI:
- * Menangani kelola data siswa (CRUD Siswa), penempatan kelas, kontak orang tua/wali, serta ekspor data ke Excel.
+ * Menangani kelola data siswa (CRUD Siswa), penempatan kelas, kontak orang tua/wali, ekspor/impor Excel, dan input masal.
  */
 class SiswaController extends Controller
 {
@@ -59,7 +63,7 @@ class SiswaController extends Controller
         return view('admin.siswa.create', compact('kelases'));
     }
 
-    // Menyimpan data siswa baru beserta pembuatan akun penggunanya
+    // Menyimpan data siswa baru dan pembuatan akun penggunanya
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -191,5 +195,149 @@ class SiswaController extends Controller
         });
 
         return redirect()->route('admin.siswa.index')->with('success', "Data siswa {$nama} berhasil dihapus.");
+    }
+
+    // Unduh Template Excel Impor Siswa
+    public function downloadTemplate()
+    {
+        return Excel::download(new SiswaTemplateExport, 'Template_Import_Siswa_Per_Kelas.xlsx');
+    }
+
+    // Form Unggah Import Excel Siswa
+    public function importForm()
+    {
+        $kelases = Kelas::orderBy('nama_kelas')->get();
+        return view('admin.siswa.import', compact('kelases'));
+    }
+
+    // Memproses File Import Excel Siswa
+    public function importStore(Request $request)
+    {
+        $request->validate([
+            'id_kelas' => 'required|exists:kelas,id_kelas',
+            'file_excel' => 'required|file|mimes:xlsx,xls,csv|max:10240',
+            'password_option' => 'required|in:nis,custom',
+            'custom_password' => 'nullable|required_if:password_option,custom|string|min:6',
+        ], [
+            'id_kelas.required' => 'Pilih kelas tujuan terlebih dahulu.',
+            'file_excel.required' => 'File Excel wajib diunggah.',
+            'file_excel.mimes' => 'Format file harus berupa Excel (.xlsx, .xls) atau CSV (.csv).',
+            'custom_password.required_if' => 'Password kustom wajib diisi jika Anda memilih opsi password kustom.',
+        ]);
+
+        $defaultPasswordSetting = $request->password_option === 'custom' ? $request->custom_password : 'nis';
+        $import = new SiswaImport((int) $request->id_kelas, $defaultPasswordSetting);
+
+        try {
+            Excel::import($import, $request->file('file_excel'));
+            $count = $import->getImportedCount();
+            $errors = $import->getErrors();
+
+            if ($count === 0 && !empty($errors)) {
+                return redirect()->back()->withInput()->with('error', 'Gagal mengimpor data: ' . implode(' | ', $errors));
+            }
+
+            $message = "Berhasil membuat {$count} akun siswa beserta data pokoknya.";
+            if (!empty($errors)) {
+                $message .= " Namun beberapa baris dilewati: " . implode(' | ', $errors);
+                return redirect()->route('admin.siswa.index')->with('warning', $message);
+            }
+
+            return redirect()->route('admin.siswa.index')->with('success', $message);
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat memproses file: ' . $e->getMessage());
+        }
+    }
+
+    // Form Input Masal Siswa Per Kelas (Web Form)
+    public function bulkForm()
+    {
+        $kelases = Kelas::orderBy('nama_kelas')->get();
+        return view('admin.siswa.bulk', compact('kelases'));
+    }
+
+    // Memproses Simpan Masal dari Form Web
+    public function bulkStore(Request $request)
+    {
+        $request->validate([
+            'id_kelas' => 'required|exists:kelas,id_kelas',
+            'siswas' => 'required|array|min:1',
+            'siswas.*.nama_siswa' => 'required|string|max:255',
+            'siswas.*.nis' => 'nullable|string|max:50',
+            'siswas.*.nisn' => 'nullable|string|max:50',
+            'siswas.*.jenis_kelamin' => 'nullable|in:L,P',
+            'siswas.*.no_wa_siswa' => 'nullable|string|max:20',
+            'siswas.*.nama_orang_tua_wali' => 'nullable|string|max:255',
+            'siswas.*.no_wa_orang_tua_wali' => 'nullable|string|max:20',
+        ], [
+            'id_kelas.required' => 'Pilih kelas tujuan terlebih dahulu.',
+            'siswas.required' => 'Minimal harus mengisikan 1 baris data siswa.',
+            'siswas.*.nama_siswa.required' => 'Nama siswa di setiap baris yang diisi wajib ada.',
+        ]);
+
+        $createdCount = 0;
+        $skipped = [];
+
+        DB::transaction(function () use ($request, &$createdCount, &$skipped) {
+            foreach ($request->siswas as $idx => $row) {
+                $nama = trim($row['nama_siswa'] ?? '');
+                $nis = trim($row['nis'] ?? '');
+                $nisn = trim($row['nisn'] ?? '');
+                $jk = trim($row['jenis_kelamin'] ?? '');
+                $waSiswa = trim($row['no_wa_siswa'] ?? '');
+                $ortu = trim($row['nama_orang_tua_wali'] ?? '');
+                $waOrtu = trim($row['no_wa_orang_tua_wali'] ?? '');
+
+                if (empty($nama)) continue;
+
+                $username = !empty($nis) ? $nis : 'siswa_' . Str::slug($nama, '_') . '_' . rand(100, 999);
+                
+                // Cek jika username/nis sudah ada
+                if (User::where('username', $username)->exists() || Siswa::where('username', $username)->exists()) {
+                    $skipped[] = "Baris #" . ($idx + 1) . " ({$nama}): Username/NIS '{$username}' sudah terdaftar.";
+                    continue;
+                }
+
+                $rawPassword = !empty($nis) ? $nis : '12345678';
+                $email = $username . '@siswa.smkn2guguak.sch.id';
+
+                $user = User::create([
+                    'name' => $nama,
+                    'username' => $username,
+                    'email' => $email,
+                    'password' => Hash::make($rawPassword),
+                    'role' => 'siswa',
+                    'status' => 'active',
+                ]);
+
+                Siswa::create([
+                    'user_id' => $user->id,
+                    'username' => $username,
+                    'password' => $user->password,
+                    'nama_siswa' => $nama,
+                    'nis' => $nis ?: null,
+                    'nisn' => $nisn ?: null,
+                    'id_kelas' => $request->id_kelas,
+                    'jenis_kelamin' => in_array($jk, ['L', 'P']) ? $jk : null,
+                    'no_wa_siswa' => $waSiswa ?: null,
+                    'nama_orang_tua_wali' => $ortu ?: null,
+                    'no_wa_orang_tua_wali' => $waOrtu ?: null,
+                    'status_siswa' => 'aktif',
+                ]);
+
+                $createdCount++;
+            }
+        });
+
+        if ($createdCount === 0) {
+            return redirect()->back()->withInput()->with('error', 'Tidak ada data siswa yang berhasil disimpan. ' . implode(' ', $skipped));
+        }
+
+        $msg = "Berhasil menambahkan {$createdCount} siswa beserta akun penggunanya ke kelas.";
+        if (!empty($skipped)) {
+            return redirect()->route('admin.siswa.index')->with('warning', $msg . " Catatan: " . implode(' ', $skipped));
+        }
+
+        return redirect()->route('admin.siswa.index')->with('success', $msg);
     }
 }

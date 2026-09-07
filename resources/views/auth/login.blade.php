@@ -52,6 +52,14 @@
             position: relative;
         }
 
+        /* Sembunyikan ikon eye */
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear,
+        input[type="password"]::-webkit-contacts-auto-fill-button,
+        input[type="password"]::-webkit-credentials-auto-fill-button {
+            display: none !important;
+        }
+
         .login-header {
             text-align: center;
             margin-bottom: 2rem;
@@ -222,19 +230,16 @@
     </div>
 
     <script>
-        function togglePasswordVisibility(inputId, btn) {
-            const input = document.getElementById(inputId);
-            if (!input) return;
-            const isPassword = input.type === 'password';
-            input.type = isPassword ? 'text' : 'password';
-            
-            const eyeOpen = btn.querySelector('.eye-open');
-            const eyeClosed = btn.querySelector('.eye-closed');
-            if (eyeOpen && eyeClosed) {
-                eyeOpen.style.display = isPassword ? 'none' : 'block';
-                eyeClosed.style.display = isPassword ? 'block' : 'none';
-            }
-        }
+    function togglePasswordVisibility(inputId, btn) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+
+        const isPwd = input.type === 'password';
+        input.type = isPwd ? 'text' : 'password';
+
+        btn.querySelector('.eye-open')?.style.setProperty('display', isPwd ? 'none' : 'block');
+        btn.querySelector('.eye-closed')?.style.setProperty('display', isPwd ? 'block' : 'none');
+    }
     </script>
 </body>
 </html>

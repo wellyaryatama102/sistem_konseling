@@ -33,6 +33,14 @@
 
         * { box-sizing: border-box; }
 
+        /* Sembunyikan ikon eye/reveal bawaan browser (Edge/Chrome) agar tidak ada double icon */
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear,
+        input[type="password"]::-webkit-contacts-auto-fill-button,
+        input[type="password"]::-webkit-credentials-auto-fill-button {
+            display: none !important;
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--bg-main);
@@ -65,6 +73,7 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            flex-shrink: 0; /* Mencegah logo tertekan */
         }
 
         .sidebar-brand-badge {
@@ -82,7 +91,16 @@
             flex-direction: column;
             gap: 0.3rem;
             flex: 1;
-            overflow: visible;
+            overflow-y: auto; /* Memastikan menu bisa di-scroll secara vertikal */
+        }
+
+        /* Styling scrollbar tipis untuk sidebar menu */
+        .sidebar-menu::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-menu::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
         }
 
         .sidebar-heading {
@@ -121,11 +139,13 @@
 
         .user-profile-box {
             padding: 1rem 1.25rem;
+            padding-bottom: max(1rem, env(safe-area-inset-bottom)); /* Jarak aman di HP modern/iPhone */
             border-top: 1px solid rgba(255, 255, 255, 0.12);
             background-color: var(--primary-dark);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-shrink: 0; /* Mengunci area ini agar tidak tenggelam saat menu banyak */
         }
 
         /* Main Content  */
@@ -324,7 +344,8 @@
                 position: fixed;
                 top: 0;
                 left: 0;
-                height: 100vh;
+                bottom: 0;     /* Memastikan menyentuh ujung bawah */
+                height: 100%;  /* Diganti dari 100vh menjadi 100% agar responsif dengan address bar HP */
                 width: 270px;
                 z-index: 100;
                 transform: translateX(-100%);
@@ -354,10 +375,9 @@
 </head>
 <body>
 
-    <!-- Overlay Gelap saat Mobile Sidebar Terbuka -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-    <!-- Sidebar Navigasi Berdasarkan 33 Wireframe Bab III -->
+    <!-- Sidebar Navigasi -->
     <aside class="sidebar">
         <div class="sidebar-brand">
             <img src="{{ asset('images/logo_smk.png') }}" alt="Logo SMKN 2 Guguak" style="width:34px; height:34px; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
@@ -378,7 +398,6 @@
                 <a href="{{ route('admin.log-aktivitas.index') }}" class="nav-item {{ request()->routeIs('admin.log-aktivitas*') ? 'active' : '' }}">Log Aktivitas System</a>
                 <a href="{{ route('admin.laporan.index') }}" class="nav-item {{ request()->routeIs('admin.laporan*') ? 'active' : '' }}">Laporan & Rekapitulasi</a>
                 <a href="{{ route('admin.pengaturan.index') }}" class="nav-item {{ request()->routeIs('admin.pengaturan*') ? 'active' : '' }}">Pengaturan Sistem</a>
-
 
             @elseif(auth()->user()->role === 'guru_bk')
                 <!-- Modul 3: Guru BK (7 Menu Terpadu) -->

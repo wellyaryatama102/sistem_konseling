@@ -40,10 +40,6 @@ class SiswaController extends Controller
         );
     }
 
-    /**
-     * 1. BERANDA SISWA
-     */
-   
     private function getPendingTindakLanjutOrtu(Siswa $siswa)
     {
         return \App\Models\TindakLanjut::with(['sesiKonseling.pengajuan.siswa', 'suratPanggilans'])
@@ -88,7 +84,21 @@ class SiswaController extends Controller
         // Cek instruksi Tindak Lanjut Pemanggilan Orang Tua & Konseling Lanjutan
         $pendingTindakLanjutOrtu = $this->getPendingTindakLanjutOrtu($siswa);
 
-        return view('siswa.dashboard', compact('siswa', 'stats', 'jadwalTerdekat', 'notifikasis', 'pendingTindakLanjutOrtu'));
+        // Ambil riwayat pengajuan terbaru milik siswa (5 data terbaru)
+        $riwayatPengajuan = PengajuanKonseling::with(['jadwal.guruBk', 'sesiKonseling'])
+            ->where('id_siswa', $siswa->id_siswa)
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('siswa.dashboard', compact(
+            'siswa', 
+            'stats', 
+            'jadwalTerdekat', 
+            'notifikasis', 
+            'pendingTindakLanjutOrtu',
+            'riwayatPengajuan'
+        ));
     }
 
     /**
@@ -207,7 +217,7 @@ class SiswaController extends Controller
                     'waktu_pertemuan' => $slot->jam_mulai,
                 ]);
             }
-            
+
             // PENGIRIMAN NOTIFIKASI WHATSAPP KE GURU BK (SISWA MEMILIH JADWAL LANJUTAN ORTUA)
             $guru = $slot->guruBk;
             if ($guru && $guru->no_hp) {
@@ -244,9 +254,7 @@ class SiswaController extends Controller
             'tanggal_pengajuan' => Carbon::now(),
         ]);
 
-        // =========================================================================
         // PENGIRIMAN NOTIFIKASI WHATSAPP KE GURU BK (PENGAJUAN KONSELING MANDIRI SISWA)
-        // =========================================================================
         $guru = $slot->guruBk;
         if ($guru && $guru->no_hp) {
             $msg = "Pengajuan Konseling Baru Masuk!\n\n"
@@ -324,7 +332,7 @@ class SiswaController extends Controller
     {
         $siswa = $this->getCurrentSiswa();
 
-        // Hanya mengambil field umum dan arahan siswa (catatan_rahasia & internal BK dilindungi)
+        // Hanya mengambil field umum dan arahan siswa
         $sesiList = SesiKonseling::query()
             ->select('id_sesi', 'id_pengajuan', 'status_sesi', 'tanggal_pelaksanaan', 'status_kehadiran', 'catatan_untuk_siswa')
             ->whereHas('pengajuan', function ($q) use ($siswa) {
